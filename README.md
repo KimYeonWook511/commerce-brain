@@ -34,20 +34,20 @@ commerce-brain/
 세 가지 동작으로 돈다 — **ingest**(쌓기) · **query**(찾기) · **lint**(유지보수).
 
 ### 플랫폼 축
-각 코드 repo가 한 플랫폼이다: `commerce-backend`→`backend`, `commerce-frontend`→`frontend`, `commerce-infra`→`infra`. 예정: `android`(주로 React Native) · `ios`. `web`은 `frontend`의 동의어다.
+분류 축인 platform 값: `backend` · `frontend` · `infra` (예정: `android`(주로 React Native) · `ios`). `web`은 `frontend`의 동의어다. 어떤 코드 repo가 어떤 platform인지는 각 repo가 자기 `.brain`에 선언한다 — 이 brain은 특정 repo 이름에 의존하지 않는다.
 
 ## 어떻게 쌓이나
 
 **1) 원본을 `raw/`에 떨군다** — 두 경로:
 
-- **repo 작업물** → 각 코드 repo(commerce-backend 등)에 둔 *brain 연동 skill*(`brain-save`)이, 작업·세션 결과를 frontmatter까지 맞춰 `raw/sessions/<platform>/`에 자동 저장한다. 사람은 작업만 하면 된다.
+- **repo 작업물** → 각 코드 repo에 둔 *brain 연동 저장 skill*이, 작업·세션 결과를 frontmatter까지 맞춰 `raw/sessions/<platform>/`에 자동 저장한다. 사람은 작업만 하면 된다.
 - **repo 밖에서 생긴 것**(회의·스펙) → 사람이 `raw/meetings/` · `raw/specs/`에 직접 올린다. 파일명은 `YYYY-MM-DD-<slug>.md`.
 
 **2) `ingest`로 정리한다** — `ingest`를 돌리면 미처리 raw를 자동으로 읽어 플랫폼·타입별 wiki 노트로 분해·정리한다. 사전 질문 없이 진행하고 끝나면 요약을 보고한다.
 
 ## 어떻게 찾나
 
-`query`(brain 세션) 또는 코드 repo의 `brain-query` skill로 묻는다. 답은 **항상 출처(`[[wiki/...]]`·`[[raw/...]]`)와 함께** 온다.
+brain 세션 안에서는 `query`로, 코드 repo에서는 그 repo의 brain 연동 조회 skill로 묻는다. 답은 **항상 출처(`[[wiki/...]]`·`[[raw/...]]`)와 함께** 온다.
 - **사람** — Obsidian에서 직접 보거나, 서술형 답 + 링크.
 - **AI 에이전트** — 의사결정 중 맥락이 부족하면 query를 호출, 구조화된(JSON) 답 + 인용으로 받는다.
 

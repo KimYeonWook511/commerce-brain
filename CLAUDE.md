@@ -36,7 +36,7 @@ commerce-brain/
 raw와 wiki는 폴더를 나누는 목적이 다르다. raw는 *어디 올릴지* 헷갈리지 않게 입력 동선으로 가르고, wiki는 *봇이 분해해 쓰는 출력*이라 타입으로 가른다. 그래서 `sessions/backend/`에 올린 덤프라도 ingest가 그 안의 frontend 얘기를 떼어 `platform: frontend` 노트로 쓸 수 있다 — 실제 플랫폼 귀속은 폴더가 아니라 내용을 읽고 frontmatter에 박는다.
 
 ### 플랫폼 축
-현재 repo: `commerce-backend`(→ `backend`)·`commerce-frontend`(→ `frontend`)·`commerce-infra`(→ `infra`). 예정: `android`(주로 React Native)·`ios`. `.brain` 연결은 repo 폴더명에서 `commerce-` 접두를 떼어 platform을 얻는다(`commerce-backend` → `backend`). platform 값은 이 repo suffix를 canonical로 쓰고, `web`은 `frontend`의 동의어로 glossary에서 정규화한다.
+platform 값: `backend`·`frontend`·`infra` (예정: `android`(주로 React Native)·`ios`). `web`은 `frontend`의 동의어로 glossary에서 정규화한다. 어떤 코드 repo가 어떤 platform인지는 각 repo가 자기 `.brain`에 선언한다(연결·platform 추출 세부는 side-repo skill의 책임). 이 brain 문서는 특정 repo 이름에 의존하지 않는다.
 
 ---
 
@@ -60,7 +60,7 @@ platform: backend
 author: KimYeonWook511
 created: 2026-07-10
 origin:                   # 있을 때만 — PR/이슈/회의 등 출처. 없으면 통째 생략
-  - { type: pr, repo: commerce-backend, ref: 275 }
+  - { type: pr, repo: <code-repo>, ref: <번호> }
 ```
 ```yaml
 # meetings/
@@ -86,7 +86,7 @@ updated: 2026-07-10
 superseded_by: null       # 대체되면 새 결정 링크
 sources:                  # 모든 주장의 근거 — 필수
   - "[[raw/sessions/backend/2026-07-10-login-token-rotation]]"
-  - { repo: commerce-backend, path: "docs/api-spec.md#refresh" }   # 코드가 정본일 때
+  - { repo: <code-repo>, path: "<정본 파일>#<앵커>" }   # 코드가 정본일 때
 ```
 
 > **분류 축은 `platform` 하나만 필수.** security·db·devops 같은 "성격"은 별도 필드 없이 전부 `tags`로 단다.
@@ -112,7 +112,7 @@ sources:                  # 모든 주장의 근거 — 필수
 
 두 모드 모두 끝에 `## 근거` + `[[raw/...]]` 인용.
 
-> commerce-backend는 `docs/`(ADR·컨벤션·architecture 등)가 팀 정본이다. 그 repo의 결정을 다루면 대체로 **모드 A** — `{repo: commerce-backend, path}`로 인용하고 wiki에는 "내 이해·트레이드오프·다시 본다면"만. ADR·OpenAPI 본문 통째 복사 금지.
+> 코드 repo가 `docs/`·스펙 등에 정본을 두면(예: ADR·컨벤션·architecture), 그 repo의 결정은 대체로 **모드 A** — `{repo, path}`로 인용하고 wiki에는 "내 이해·트레이드오프·다시 본다면"만. ADR·OpenAPI 본문 통째 복사 금지.
 
 ### 그 외
 - **api-contract** — 본질적으로 코드가 정본이라 항상 companion. 계약의 링크·요약·"왜 이 형태인가"만, OpenAPI/스펙 본문 복사 금지.

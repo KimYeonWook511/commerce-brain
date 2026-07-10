@@ -13,13 +13,15 @@ updated: 2026-07-10
 
 ## platform 태그군 (분류 축)
 
-| canonical | 대상 repo | 동의어 |
-|---|---|---|
-| `backend` | commerce-backend | server, 서버, api |
-| `frontend` | commerce-frontend | web, 웹, client |
-| `infra` | commerce-infra | devops, ops |
-| `android` | (예정, 주로 React Native) | aos |
-| `ios` | (예정) | — |
+| canonical | 동의어 |
+|---|---|
+| `backend` | server, 서버, api |
+| `frontend` | web, 웹, client |
+| `infra` | devops, ops |
+| `android` | aos |
+| `ios` | — |
+
+> `android`(주로 React Native)·`ios`는 예정 플랫폼이다. 어떤 코드 repo가 어떤 platform인지는 각 repo의 `.brain`이 선언한다(이 glossary는 repo 이름에 의존하지 않는다).
 
 ## 일반 태그 (성격·기능)
 
