@@ -32,7 +32,7 @@ retry + Processor 분리로 처리했다. 초기 구현 뒤 외부 AI 코드 리
   DDD의 "다른 aggregate는 identity로만 참조" 원칙을 신설 도메인부터 기본값으로 삼았다. cart 조회 시
   `productRepository.findAllById(productIds)`로 Product를 한 번 더 조회해 응답을 조립하는데, PK 인덱스
   조회라 비용은 무시 가능하다. 대신 DB 참조 무결성을 FK가 보장하지 않으므로, 정합성은 application
-  검증·UNIQUE 제약·삭제 순서 정책이 책임진다(이게 아래 결정 3의 전제가 된다). 이 결정은 이 phase에
+  검증·UNIQUE 제약·삭제 순서 정책이 책임진다(이게 아래 "장바구니 추가 시 Product 존재·상태 검증"의 전제가 된다). 이 결정은 이 phase에
   국한하지 않고 이후 신설 도메인 전체에 적용하는 컨벤션으로 명문화했고, 기존 도메인의
   ManyToOne→ID 마이그레이션은 별도 트랙으로 분리했다.
 - **가격은 cart에 저장하지 않는다.** `CartItem`은 `productId`·`quantity`만 갖고, 조회 시점에 Product를
@@ -101,7 +101,7 @@ cart 항목 추가·수정의 경쟁 조건이 리뷰에서 지적됐다. 경쟁
 
 외부 리뷰(codex)가 `POST /cart/items`가 `productId`의 `@Positive`만 보고 실제 Product 존재를 확인하지
 않는다고 지적했다 — 임의의 미존재 productId로도 201을 받고 orphan cart row가 생긴다. cart는 FK를
-안 두는 결정(결정 1) 때문에 데이터 정합성의 유일한 게이트가 application 검증이다.
+안 두기로 한 결정(cross-aggregate를 ID로만 참조) 때문에 데이터 정합성의 유일한 게이트가 application 검증이다.
 
 - **매핑:** `AddCartItemProcessor`가 row를 만들기 전에 `productRepository.findById`로 검증한다.
   미존재 또는 soft-deleted면 `CART_ITEM_PRODUCT_NOT_FOUND`(`CART-404-2`, 404), `STOPPED`면
@@ -132,7 +132,7 @@ cart 항목 추가·수정의 경쟁 조건이 리뷰에서 지적됐다. 경쟁
   silent log 회귀도 자연 차단. (2) bulk delete가 사라져, 리뷰에서 나온 `@Modifying(clearAutomatically=
   true)` 부착 권고(persistence context stale 회피)도 불필요해졌다. (3) 결정 문서의 관련 단락이 "범위
   제한"에서 "race 처리"로 단순화됐다.
-- `RemoveCartItemService`는 결정 2와 달리 retry loop가 없어 409가 클라이언트에 그대로 노출된다.
+- `RemoveCartItemService`는 add/update 경로(낙관락 + retry)와 달리 retry loop가 없어 409가 클라이언트에 그대로 노출된다.
   retry 책임은 클라이언트에 위임한다(재요청 시 보통 404 또는 정상 성공으로 정리됨).
 
 ### 5. path productId — spec을 코드에 맞춤
@@ -164,7 +164,7 @@ cart 항목 추가·수정의 경쟁 조건이 리뷰에서 지적됐다. 경쟁
 
 ### 사용자의 도메인 인사이트가 추상적 리뷰보다 강할 수 있다
 
-이 세션에서 가장 강력한 개선(결정 4의 entity delete)이 사용자의 한 마디에서 시작됐다.
+이 세션에서 가장 강력한 개선(DELETE를 bulk 쿼리에서 entity 경유 삭제로 바꾼 것)이 사용자의 한 마디에서 시작됐다.
 
 > "find해왔으면 해당 entity를 delete에 넘기면 되잖아 왜 벌크쿼리로 하는거야?"
 
@@ -201,10 +201,10 @@ PR 분리), Draft PR로 출발해 1차 리뷰를 받고 ready로 전환하기로
 ## 미해결·열린 질문
 
 - **cart insert race 멱등 흡수 재방문 여지.** 지금은 insert race를 안전망 500에 위임한다. cart UX상
-  "두 번째 클릭도 조용히 흡수"가 더 자연스럽다는 의견이 향후 강화되면, 결정 2를 재방문해
+  "두 번째 클릭도 조용히 흡수"가 더 자연스럽다는 의견이 향후 강화되면, 동시성 처리 방식(낙관락 + 안전망 위임)을 재방문해
   (C) atomic UPDATE 또는 `ConstraintViolationException.getConstraintName()` 기반 정확한 UNIQUE 식별 +
   retry로 전환할 수 있다.
-- **회원당 cart row 상한.** 결정 6대로 이 phase에서는 의도적으로 미뤘다. abuse 관측·IN 절 한도
+- **회원당 cart row 상한.** 위 "회원당 cart row 개수 상한은 두지 않는다"에서 정리한 대로 이 phase에서는 의도적으로 미뤘다. abuse 관측·IN 절 한도
   임박이 트리거.
 - **다음 phase의 PR 분리 실험.** 도메인 PR과 cross-cutting 컨벤션 PR을 나누는 방식을 아직 실제로
   적용해보지 않았다.
