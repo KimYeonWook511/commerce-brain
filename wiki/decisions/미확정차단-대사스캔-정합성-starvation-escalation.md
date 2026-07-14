@@ -1,0 +1,61 @@
+---
+type: decision
+status: accepted
+platform: backend
+author: KimYeonWook511
+decided_by: KimYeonWook511
+tags: [payment, reconciliation, order-expiry, starvation, escalation, unknown-status, blocking-integrity]
+created: 2026-06-10
+updated: 2026-07-14
+superseded_by: null
+sources:
+  - "[[raw/sessions/backend/2026-06-10-pr-237-reconciliation-pg-calls-and-blocking-integrity]]"
+  - "[[raw/sessions/backend/2026-06-10-pr-237-reconciliation-review-findings]]"
+---
+
+# 미확정 차단과 대사 스캔의 정합성 — over-blocking·starvation은 escalation 종착 한 곳에서 풀린다
+
+## 컨텍스트 — 만료 차단 ↔ 대사 스캔의 시간 조건 비대칭
+
+미확정 결제(status가 `UNKNOWN`/`REQUESTED`)가 걸린 주문을 만료 배치에서 제외하는 "만료 차단"과, 그 미확정을 종결시키는 "대사 스캔"은 시간 조건이 서로 다르다. 이 비대칭을 어떻게 다룰지가 결정 지점이었다. 대사가 PG에 실제로 하는 일(조회·보상만, 재승인 없음)은 [[대사-확정-검증보상-대칭-재승인없음]]에 있고, 이 노트는 같은 PR #237 세션의 정합성 구조 측면이다(review-findings raw 공유).
+
+## 결정: 차단은 상한 없음 / 스캔은 6시간 상한 / 만료 차단 대상에 REQUESTED 추가
+
+- **만료 차단 쿼리에는 시간 상한을 두지 않는다.** 결제 status가 UNKNOWN/REQUESTED인 한 나이와 무관하게 무조건 차단한다. 반면 자동 대사 스캔에는 ~6시간 상한이 있다(그보다 오래된 건은 escalation으로 자동 대사에서 빠진다).
+- **차단 쿼리에 6시간 상한을 넣으면 안 된다.** 6시간 넘은 미확정이 실제로는 PG에 과금돼 있을 수 있는데, 그 주문을 만료(취소·재고복구)시키면 돈은 받고 주문은 취소된 채로 돈이 샌다 — 애초에 차단하는 이유가 그것이다. 그래서 차단은 상한 없이 유지하고 스캔만 상한을 둔다.
+- **만료 차단 대상을 UNKNOWN → UNKNOWN + REQUESTED로 확장(codex 발견).** 만료 차단 쿼리가 결과 불명(UNKNOWN)만 보고 있었는데, 아직 요청중(REQUESTED = 승인 호출 후 결과 저장 전에 중단돼 **실제로는 과금됐을 수 있는** 상태)도 차단해야 만료-대사 경합을 막는다. 이제 둘 중 하나라도 걸린 주문은 만료되지 않고, 대사가 그 결제를 종결해 차단을 풀어줘야 정상 만료된다(만료 배치와 짝).
+
+## over-blocking 갭 — 6시간 초과 영구 차단, 새 갭 아님, 종착(#238) 위임
+
+6시간 초과 미확정 결제가 걸린 주문은 자동 대사에서도 빠지고(스캔 상한 초과) 만료에서도 영구 차단된다(차단은 상한 없음). 즉 자동으로는 **아무 데서도 안 풀린다.** 코드리뷰가 이번 변경에서 가장 심각한 항목으로 지적했다.
+
+- **다만 이번 변경이 새로 만든 갭은 아니다.** 만료 차단은 원래 UNKNOWN만 대상으로 삼고 있었고, 이 6시간 초과 영구 차단 문제는 그때 이미 UNKNOWN에 동일하게 있던 것이다. 이번 변경은 차단 대상에 미확정 REQUESTED를 추가로 넓혔을 뿐 갭 자체를 만든 게 아니다.
+- **그래서 이번 PR에서 즉시 닫지 않고 종착(#238)에 위임했다** — 아래 구조상 종착 한 곳이 차단·대사를 동시에 해소하므로 근본 해소는 그쪽이 맞다.
+- **지금도 최소 관측은 된다.** 6시간 초과로 스캔에서 빠지는 escalation 분기는 상태를 바꾸지 않고 WARN 로그(paymentId·orderId 포함)만 남겨, 종착 기능이 붙기 전까지 로그로는 보인다.
+
+## starvation — 진입지연 정책과 스캔 쿼리 하한 불일치, 단일 출처 상수로 해소
+
+- **진입 지연 정책은 이미 분리돼 있었다:** UNKNOWN ~1분, REQUESTED ~15분(NaverPay 승인 가능 10분 + 마진 5분). REQUESTED를 늦게 대사하는 이유는 승인 윈도우가 닫히기 전에는 이력을 물어도 "진행 중"만 나오기 때문이다. 이 임계 상수의 파생 근거는 [[결제-후처리-대상식별-status중심-재설계]]이다.
+- **그런데 대사 스캔 쿼리만 둘 다 1분 하한으로 긁고 있었다(codex 발견).** 1~15분 사이의 미성숙 REQUESTED가 `id ASC` 첫 페이지(배치 상한)를 차지하고, 정책에서 매 주기 "아직 대상 아님"으로 버려져, 그 뒤 줄 선 실제 후보들이 고사(starvation)했다.
+- **버그의 본질은 "진입 지연 정책과 스캔 쿼리 하한의 불일치".** 스캔을 정책에 맞춰 REQUESTED 15분 하한으로 분리(UNKNOWN 1분 / REQUESTED 15분 하한, 6시간 상한)하고, 정책과 스캔 쿼리가 같은 상수를 단일 출처(정책 상수)에서 공유하도록 묶어 다시 어긋나지 않게 했다.
+
+> 이 starvation의 **남은 본체**(status를 확정하지 못해 `KEEP_WAITING`으로 판정된, 행을 쓰지 않아 매 주기 재스캔되는 wait 건)는 이 PR에서 닫히지 않았다. 후속 PR #263이 backoff로 마무리한다 → [[대사-keep-waiting-backoff-next-reconcile-at]].
+
+## escalation 종착 한 곳이 차단·대사를 동시에 해소하는 구조
+
+그 비대칭이 만드는 over-blocking 갭은 종착 한 곳에서 동시에 풀린다. escalation 종착(후속 #238)이 6시간 초과 건의 status를 UNKNOWN/REQUESTED 밖으로 확정하면:
+
+- 만료 차단 조건(status가 UNKNOWN/REQUESTED일 때만 차단)에서 자연히 빠져 **만료 차단이 자동 해제**되고,
+- 동시에 대사 스캔 대상에서도 빠져 **재시도가 멈춘다.**
+
+종착 한 곳이 차단과 대사를 함께 해소하는 구조라, 두 곳을 따로 손볼 필요가 없다. 이 "escalation은 새 결제 상태를 도입하지 않고 스캔 시간 윈도우 상한으로 자동 제외한다"는 방침은 [[payment-status-사실만-분류는-정책계산-manual-review-철회]]에 정본으로 정리돼 있고, 종착 시점을 담는 직교 필드 접근은 [[결제-escalation-종착통지-escalatedAt-직교필드]] 참고.
+
+## 미해결·후속 (#238 종착·통지, #239 단일테이블 결합·스캔 인덱스 부재)
+
+- **escalation 종착·통지(#238)가 over-blocking을 닫는 핵심.** 위 구조상 종착이 status를 확정하면 만료 차단 자동 해제 + 대사 재시도 정지가 함께 일어나므로, 이번 PR이 남긴 갭은 그쪽에서 근본적으로 닫힌다.
+- **단일 테이블 결합 부채(#239).** 승인(APPROVE)과 취소(CANCEL)를 한 테이블(`tbl_payment`)에 type 컬럼으로 묶어둔 설계가 연쇄 비용을 만든다 — 모든 쿼리에 type 필터를 강제하고, 스캔 모집단을 부풀리고, 정책 분기를 비대화하고, 락 경합을 넓힌다. 대사 스캔 쿼리의 인덱스 부재(풀스캔 + filesort)도 함께 드러나 #239에 같이 적었다. **인덱스로 단기 완화 vs 테이블 분리로 근본 해소**가 그 트레이드오프다(db/성능 부채 tradeoff 후보, [[payment-도메인-구조-개요]] 참고).
+
+## 근거
+
+- [[raw/sessions/backend/2026-06-10-pr-237-reconciliation-pg-calls-and-blocking-integrity]]
+- [[raw/sessions/backend/2026-06-10-pr-237-reconciliation-review-findings]]

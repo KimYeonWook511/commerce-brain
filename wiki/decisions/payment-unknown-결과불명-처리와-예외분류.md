@@ -1,0 +1,66 @@
+---
+type: decision
+status: accepted
+platform: backend
+author: KimYeonWook511
+decided_by: KimYeonWook511
+tags: [payment, unknown-state, reconciliation, exception-classification, double-payment, timeout]
+created: 2026-06-04
+updated: 2026-07-14
+superseded_by: null
+sources:
+  - "[[raw/sessions/backend/2026-06-04-payment-order-redesign-decisions]]"
+  - "[[raw/sessions/backend/2026-06-05-pr-205-payment-redesign-review-fixes]]"
+---
+
+# UNKNOWN(승인 결과 모름) 처리 — 세 번째 상태와 예외 분류
+
+승인 시도의 결과가 SUCCEEDED도 FAILED도 아닌 세 번째 상태 UNKNOWN을 도입한 결정이다. 시도를 append-only로 쌓는 모델([[payment-append-only-원장과-exists-완료판단]]) 위에서 "결과 모름"도 한 시도로 남는다.
+
+## 상황과 위험 — 실패/성공 단정 모두 위험
+
+승인 API를 호출했는데 응답을 못 받으면(타임아웃/네트워크 단절) 네이버가 승인했는지(돈이 빠졌는지) **알 수 없다**. 이때 단정하면 양쪽 다 위험하다.
+
+- **"실패"로 단정** → 사용자 재시도 → 실제론 승인됐던 경우 이중결제. (주문 단위 unique가 막아주긴 하나, 막힌 승인은 이미 돈이 빠져 보상취소가 필요해진다.)
+- **"성공"으로 단정** → 미결제 주문을 PAID 처리.
+
+그래서 그 시도를 UNKNOWN으로 남긴다.
+
+## 결정 — 모르면 '확인 중' 안내 + 재시도 차단
+
+**모를 땐 모른다고 안내하고, 행동을 막는다.**
+
+- 사용자 안내: "결제 결과를 확인 중입니다. 잠시 후 주문 내역에서 확인해 주세요."(응답 코드 `PAYMENT_RESULT_PENDING`)
+- 재시도: **차단**(이미 승인됐을 수 있으므로 새 결제 시작 금지).
+- 확정: 추후 **대사(네이버 조회 API)**로 UNKNOWN → SUCCEEDED/FAILED 보정.
+
+승인 호출 후 DB 반영 실패도 "결과 모름"이라 같은 UNKNOWN 흔적으로 처리한다 — 이 경계는 [[payment-order-트랜잭션-경계-cross-aggregate-단일tx]].
+
+## 결함 — 결과불명을 FAILED로 오분류해 이중결제 열림(가장 심각)
+
+> [!warning] 자동 구현이 흘린 가장 심각한 결함(PR #205 3차 리뷰)
+> PG 승인 호출의 timeout/네트워크 오류를 PG 클라이언트가 네트워크 예외로 감싸는데, 게이트웨이가 이를 **'실패(FAILED)'로 반환**하고 있었다. 그 아래에 UNKNOWN으로 보내는 분기가 있었지만 위에서 다 잡혀 도달 못 하는 **죽은 코드**였다. timeout은 *PG가 승인을 처리했는지 불명*인데 FAILED로 기록하면 "그 주문에 결과 불명 결제가 있는지 검사해 재시도를 차단하는 로직"이 안 걸린다 → 재결제가 허용되고, PG가 이미 승인한 상태였다면 **이중결제**가 난다.
+
+재시도 차단의 최종 방어(주문 단위 unique)와 보상취소가 있어도, 애초에 UNKNOWN으로 기록되지 않으면 차단 로직 자체가 안 걸린다는 게 핵심이었다 — [[payment-이중결제-reserve따닥-mysql-null트릭-unique]].
+
+## 예외 분류 원칙 — 결과 모름 vs 처리 안 됨
+
+정정한 분류 원칙이다.
+
+- **UNKNOWN(결과 모름)**: 네트워크 오류 / PG 서버 오류 / 응답 해석 불가 — PG가 처리했는지 알 수 없는 것.
+- **FAILED(처리 안 됨이 확실)**: 인증 실패 / 잘못된 요청처럼 처리되지 않음이 확실한 거절.
+
+외부 호출 예외를 '실패'로 뭉뚱그리면 *결과 모름*과 *처리 안 됨*이 섞여 정합성이 깨진다 — 성공/실패 외에 '결과 모름'이라는 세 번째 상태가 필요한 이유다. PG 예외 분류의 후속 정비(#206, 프로그래밍 버그를 결과 불명이 아니라 시스템 예외 500으로 보내는 미세 조정)는 공통 예외 정리(#198)와 같은 PR로 분리했으며, 승인 요청 전송 시점의 예외 경계는 [[pg-승인-예외-경계-요청전송시점]]와 이어진다.
+
+## 가벼운 단건 대사 권장
+
+전체 배치 대사는 나중에 만들더라도, 사용자가 "확인 중" 화면에 재진입하거나 주문내역을 조회할 때 **그 주문의 merchantPayKey로 네이버 조회 API를 단건 호출**해 결과를 확정하는 정도는 작아서 권장한다. UNKNOWN이 영영 안 풀리는 것을 막는다.
+
+## 미해결 — 해소 대사 미구현
+
+이번 작업은 결과 불명 결제를 *마킹하고 차단*까지만 했고, *해소*(PG 단건 조회로 실제 결제됐는지 확인)는 후속으로 분리했다 — `PaymentReconciliationService` 미구현. 위 결함 수정들로 타이밍성 차단은 줄였지만, 진짜 통신 장애의 해소는 이 후속이 있어야 닫힌다. 한 번 UNKNOWN이 찍힌 주문이 영영 안 풀릴 수 있다. CANCEL 쪽 대사와 대사 확정 로직은 [[paid-order-취소환불-단일tx-의도와-standalone-cancel-대사]]에서 신설됐다.
+
+## 근거
+
+- [[raw/sessions/backend/2026-06-04-payment-order-redesign-decisions]] — UNKNOWN 상황·위험, "확인 중" 안내 + 재시도 차단, 단건 대사 권장.
+- [[raw/sessions/backend/2026-06-05-pr-205-payment-redesign-review-fixes]] — 결과불명을 FAILED로 오분류한 죽은 코드 결함, 예외 분류 정정, 해소 대사 미구현.
