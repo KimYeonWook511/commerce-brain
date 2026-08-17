@@ -6,7 +6,7 @@ author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [exception-handling, exception-strategy, infra-failure, cache, redis, refresh-token, auth, adapter, restcontrolleradvice, yagni, logging, error-code]
 created: 2026-06-03
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-03-pr-197-auth-redis-exception-mapping]]"

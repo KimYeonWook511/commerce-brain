@@ -6,7 +6,7 @@ author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [order, optimistic-lock, pessimistic-lock, version, race-condition, concurrency]
 created: 2026-05-29
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-05-29-order-domain-overview]]"

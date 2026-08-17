@@ -64,3 +64,12 @@ append-only. 각 항목 형식: `## [YYYY-MM-DD] {ingest|query|lint|setup} | <�
   4. **싱글턴 131종** — 절반이 여전히 1회용. 3회 미만 태그를 일괄 정리할지 판단 필요.
   5. **`decisions/`·`knowledge/` 폴더 승격** (이번 보류분).
   6. **`contracts/` 빈 폴더** — 멱등키 헤더 계약·취소 요청/응답 형태가 api-contract 후보(코드가 정본이므로 companion).
+
+## [2026-08-17] lint (3회차) | updated 표기 정합 15건 + lint skill 보강
+
+- **발견 1건 — lint 가 만든 결함.** 1·2회차에서 본문에 진화 콜아웃·역참조를 `Edit` 로 넣으면서 **frontmatter `updated:` 를 안 고친 노트가 15개**였다. 태그 정규화는 스크립트에 갱신 로직을 넣어뒀지만 콜아웃은 손으로 넣어 빠졌다. `updated` 가 거짓을 말하는 상태.
+- **왜 1·2회차가 못 잡았나:** `updated` **분포만 세고** "67개가 07-14"를 "새 배치가 안 건드린 노트"로 해석해 넘겼다. **실제 변경 여부와 대조하지 않았다.** 항목 3번이 잡아야 할 것을 lint 를 돌린 쪽이 만든 셈이다.
+- **대조 과정에서 함정 하나:** `git diff --name-only` 가 한글 파일명을 octal escape 로 내보내 `[ -f "$f" ]` 가 전부 실패하고 **루프가 조용히 0건을 반환했다.** `core.quotepath=false` 가 필요했다. 이 저장소에 이미 기록해둔 교훈과 같은 종류다 — [[종류·테이블-분리시-조용한-회귀와-전수조사-대상]](0건 반환과 검사 성립은 다르다).
+- **수정**: `updated:` 15건 → `2026-08-17`. 재검증 0건.
+- **skill 보강**(별도 `setup:` 커밋): `.claude/skills/lint/SKILL.md` 항목 3에 git 대조 절차 + `core.quotepath` 주의를 추가했다. 사람이 눈으로 안 보면 다시 놓치는 종류라 절차로 박았다.
+- **다음 lint 후보**: 변동 없음 — (1) `decisions/`·`knowledge/` 폴더 승격(3회 연속 보류), (2) `contracts/` 빈 폴더, (3) 계약 drift·companion 위반은 `commerce-backend` 접근이 없어 **영구 미판정**, (4) `refund`(31)·`reconciliation`(25) 하위 축 분해 시점 기준.

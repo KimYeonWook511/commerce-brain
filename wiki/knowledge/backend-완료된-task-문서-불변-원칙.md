@@ -6,7 +6,7 @@ author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [documentation, adr, task-docs, operations, immutability]
 created: 2026-06-02
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-02-pr-192-payment-completion-fact-query]]"

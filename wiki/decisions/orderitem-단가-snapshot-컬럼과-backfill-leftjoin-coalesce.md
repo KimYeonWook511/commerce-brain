@@ -6,7 +6,7 @@ author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [order, order-item, price-snapshot, migration, backfill, money-vo, code-review]
 created: 2026-06-04
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-04-pr-204-unit-price-snapshot]]"

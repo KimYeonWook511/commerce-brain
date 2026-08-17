@@ -6,7 +6,7 @@ author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [payment, optimistic-lock, pessimistic-lock, concurrency, lost-update, order, version]
 created: 2026-06-11
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-11-why-payment-optimistic-lock]]"
