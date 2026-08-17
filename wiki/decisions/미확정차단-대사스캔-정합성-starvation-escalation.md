@@ -6,7 +6,7 @@ author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [payment, reconciliation, order-expiry, starvation, escalation, unknown-status, blocking-integrity]
 created: 2026-06-10
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-10-pr-237-reconciliation-pg-calls-and-blocking-integrity]]"
@@ -14,6 +14,11 @@ sources:
 ---
 
 # 미확정 차단과 대사 스캔의 정합성 — over-blocking·starvation은 escalation 종착 한 곳에서 풀린다
+
+> [!note] 진화 (2026-08) — 스캔 상한이 폐지되면서 over-blocking 갭이 다른 방식으로 닫혔다
+> 아래가 남긴 핵심 갭("6시간 초과 미확정은 자동 대사에서도 빠지고 만료에서도 영구 차단돼 아무 데서도 안 풀린다")은 **종착이 아니라 상한 폐지로** 닫혔다 — 회수를 멈추지 않으므로 그 건은 계속 확정 시도를 받는다([[결과회수-상한-폐지와-백오프-표-통지-반복]]). **"차단은 상한 없음"이라는 이 노트의 결정은 그대로 유효하고**, 그것과 짝을 이루던 "스캔은 상한 있음"만 사라진 셈이다.
+> 진입 지연 하한 15분의 근거(승인 가능 시간)도 사라졌다 — 첫 회차부터 승인 API를 다시 부르므로 **그 값을 우리가 알 필요가 없어졌다**([[승인은-다시-물어-확정-환불에는-실패-종착이-없다]]).
+> 아래 미해결로 남긴 **단일 테이블 결합 부채**는 이번에도 테이블을 나누지 않는 쪽으로 결론이 났다 — 근거를 세어보니 사라졌고 배치 스캔이 조용히 깨질 위험이 컸다([[결제사건-테이블분리-기각과-유일제약-문자열-단일컬럼-교체]]).
 
 ## 컨텍스트 — 만료 차단 ↔ 대사 스캔의 시간 조건 비대칭
 

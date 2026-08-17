@@ -1,18 +1,26 @@
 ---
 type: decision
-status: accepted
+status: superseded
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [payment, escalation, reconciliation, idempotency, concurrency, notification]
 created: 2026-06-11
-updated: 2026-07-14
-superseded_by: null
+updated: 2026-08-17
+superseded_by: "[[결과회수-상한-폐지와-백오프-표-통지-반복]]"
 sources:
   - "[[raw/sessions/backend/2026-06-11-pr-242-escalation-version-gap]]"
 ---
 
 # 결제 escalation 종착·통지 — 새 상태 대신 escalatedAt 직교 필드
+
+> [!warning] 뒤집힘 (2026-08) — 세 가지가 갈렸다
+> 결제·환불 모델 재설계에서 이 결정의 세 축이 각각 바뀌었다.
+> - **자동 회수를 멈추는 상한 자체가 폐지됐다.** "6시간 넘으면 통지하고 자동 대사에서 뺀다"가 "멈추지 않는다"로 갔다 — **통지가 로그 한 줄이고 받아서 처리할 경로가 없어 멈춤이 실질적으로 방치였다**([[결과회수-상한-폐지와-백오프-표-통지-반복]]).
+> - **통지가 한 번이 아니라 상태가 이어지는 동안 반복된다.** 그리고 시각을 먼저 찍고 보내는 순서가 뒤집혀, 아래 "정확히 한 번" 멱등 자체가 목표에서 빠졌다.
+> - **"자동 처리가 더 못 간다"를 직교 필드가 아니라 상태로 저장한다**([[승인은-다시-물어-확정-환불에는-실패-종착이-없다]]). 아래 (A) 기각 근거("사실과 파생을 섞는다")는 유효하지만, "자동으로 더 못 간다"는 파생 분류가 아니라 사실이라는 재판정을 받았다.
+>
+> **살아남은 것:** 통지를 포트로 추상화하고 실채널을 후속으로 미룬 배치, 그리고 "새 상태를 만들기 전에 직교 필드를 먼저 본다"는 순서 자체.
 
 ## 컨텍스트·문제 — 6시간 초과 미확정 결제가 통지 없이 묻힘
 

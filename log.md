@@ -20,3 +20,25 @@ append-only. 각 항목 형식: `## [YYYY-MM-DD] {ingest|query|lint|setup} | <�
 - **skip 0건**. 64 raw 전부 wiki 에 인용됨(멱등성 확보).
 - **검증**: 내부 `[[링크]]` 깨짐 0 · raw 인용 커버리지 64/64 · frontmatter 필수필드 OK.
 - **다음 lint 후보**: (1) 태그 산발 통합, (2) payment 05-29 스냅샷 결정들의 supersede 정합 재점검, (3) 대형 MOC(payment 38·order 21) 하위 폴더링/분할 검토, (4) knowledge 13개 — `knowledge/` 하위 폴더링 승격 여부.
+
+## [2026-08-17] ingest | backend sessions 29건 (부분취소 → 결제·환불 모델 재설계 배치)
+
+- **대상**: `raw/sessions/backend/` 미처리 29건 전부 (wiki 인용 0건 확인). 기간 2026-07-15 ~ 2026-08-16, 세 국면 — ① 부분취소 1차 설계(issue #291, 07-15~07-23) ② 재설계 + 트랜잭션 경계 수정(#298/#299) + 문서 번호 정리(#301/#302, 08-08) ③ 네이버페이 실측(#304) → 결제·환불 모델 전면 재설계(PR #305, 08-10~08-16). meetings/specs는 README placeholder뿐이라 대상 없음.
+- **신규 53개**: decisions 49(그중 tradeoff 3) · topics 2 · knowledge 12. 큰 raw 하나가 결정 14개를 담아(`2026-08-08-partial-cancel-design-decisions`) 결 단위로 6개 노트로 쪼갰고, PR #305 raw 4건(총 82KB)은 25개 결정 노트로 분해했다.
+- **supersede 6건** — 뒤집힌 결정을 양쪽 보존하고 `superseded_by`로 연결:
+  - `결제-부분환불-도입-현행한계-4가지와-테이블분리` → `결제사건-테이블분리-기각과-유일제약-문자열-단일컬럼-교체` (실제 필드 수를 세니 응집도 근거가 사라졌다)
+  - `payment-reserve-예약테이블-분리-a안-b안` / `payment-reserve-ready-흐름-재설계-expiresat-재사용만료` → `예약테이블-폐지-결제행-활성슬롯-단일화와-사라지는-방어`
+  - `대사-keep-waiting-backoff-next-reconcile-at` / `결제-escalation-종착통지-escalatedAt-직교필드` → `결과회수-상한-폐지와-백오프-표-통지-반복` (상한이 폐지되면서 고정 간격 근거가 사라졌다)
+  - `이중환불-최종방어선-잔액대조-도입` → `잔액대조-옵션-미사용-공급자-권장의-전제-확인` (실측으로 도입했다가 비동기 구조와 안 맞아 기각)
+- **기존 노트 진화 콜아웃 12건**: `paid-order-취소환불-단일tx-…`(단정한 단일 tx가 코드와 어긋나 있었음), `payment-status-사실만-…`(적용 범위를 너무 넓게 읽었던 정정), `unique-위반-예외번역-…`(제약 이름 기반으로 세분화), `payment-append-only-…`(승격 조건 둘이 충족됨), `payment-unknown-…`(어휘 셋→넷), `payment-부분취소-모델만-…`(open→decided, 맞은 것/틀린 것), `payment-이중결제-reserve따닥-…`, `payment-낙관적-락-…`(예약해둔 재판단이 닫힘), `payment-동시성-unique-vs-lock-…`, `미확정차단-대사스캔-…`, `orderitem-단가-snapshot-…`, `주문-멱등성-redis-setnx-…`(#171이 결제 쪽에서 답을 얻음), `payment-도메인-구조-개요`(2차 재설계 반영), knowledge 5건에 역참조.
+- **MOC 32개**(신규 10): `refund`(30)·`partial-cancel`(18)·`pg-gateway`(15)·`mysql`(13)·`error-code`(11)·`transaction-boundary`(11)·`double-payment`(10)·`aggregate`(10)·`adapter`(10)·`unknown-status`(8). 기존 22개도 전량 재생성하며 `superseded`/`open`/`draft` status를 목록에 노출. **프로세스·메타 축(`convention` 21·`process` 12·`verification` 8)은 MOC로 만들지 않았다** — MOC는 기능 목차이고 그 축은 `knowledge/`가 담당한다(기존 ingest와 같은 기준).
+- **glossary**: 개수 갱신(태그 279종) + 신규 canonical 등재(`refund`·`partial-cancel`·`aggregate`·`invariant`·`unknown-status`·`verification`·`operations` 등). 미통합 동의어에 `transaction`·`transaction-boundary`, `jpa`·`hibernate`, `spec-review`·`design-review` 추가.
+- **skip 0건**. 29 raw 전부 wiki에 인용됨(멱등성 확보).
+- **검증**: 내부 `[[링크]]` 깨짐 0 · raw 인용 커버리지 29/29 · index ↔ 실제 노트 1:1 대조 0 diff · frontmatter 필수필드 OK.
+- **다음 lint 후보**:
+  1. **`payment` MOC가 79개** — 이제 분할이 실질적으로 필요하다. `refund`·`partial-cancel`·`reconciliation`으로 이미 갈라지므로 `payment` MOC를 하위 축 인덱스로 재구성할 여지.
+  2. **태그 산발 심화(279종)** — 위 미통합 목록 승인 후 일괄 정규화.
+  3. **`decisions/` 118개 평탄** — 폴더 승격 검토(index에서는 이미 8개 주제군으로 갈라 쓰고 있다).
+  4. **`knowledge/` 25개** — 하위 폴더링 승격(index에서 방법론/테스트/문서운영/구현패턴 4군으로 갈라 쓰는 중).
+  5. **`payment-도메인-구조-개요`가 두 차례 재설계로 사실상 무효** — 현재 구조를 반영한 새 허브 topic 작성 여부.
+  6. **`contracts/` 여전히 빈 폴더** — 멱등키 헤더 계약·취소 요청/응답 형태가 api-contract 후보로 보인다(코드가 정본이므로 companion).

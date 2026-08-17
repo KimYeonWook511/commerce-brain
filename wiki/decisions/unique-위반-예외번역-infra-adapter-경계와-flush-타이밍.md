@@ -6,13 +6,18 @@ author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [exception-handling, infra-adapter, jpa, flush, transaction, unique-constraint, payment, innodb, concurrency]
 created: 2026-06-08
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-08-jpa-flush-transaction-exception-boundary]]"
 ---
 
 # DB unique 위반을 어느 계층에서 도메인 예외로 번역하나 — infra adapter 경계와 flush 타이밍
+
+> [!note] 진화 (2026-08) — 판단축은 그대로, 이 자리가 "다룬다" 쪽으로 넘어갔다
+> 아래의 판단축("이 예외를 받는 계층이 이 타입을 알아도 되는가", 그리고 능동 후처리가 필요한 위반만 명시 catch)은 유효하다. 바뀐 것은 **한 트랜잭션이 네 테이블을 저장하게 되면서 예외의 의미가 섞였다**는 것이다 — 무결성 위반이 유일 제약뿐 아니라 NOT NULL·외래 키에서도 오게 되어 "뜻이 하나"라는 전제가 깨졌다. 그래서 **타입이 아니라 제약 이름으로 가르는** 쪽으로 갔다([[무결성위반-도메인예외-번역을-제약이름으로-가른다]]).
+> 함께 실측된 사실 하나 — **이 구성에서는 `DuplicateKeyException`이 아예 생성되지 않는다.** 하위 타입으로 좁히면 "좁힌다"가 아니라 "아무것도 안 잡는다"가 된다([[예외타입-실측과-테스트가-명세를-넘어-단언하는-것]]).
+> 아래의 **즉시 flush 계약**은 그 판정의 전제로 그대로 쓰이고, 그 계약을 이름으로 드러내는 방식은 [[유일슬롯-비우고-같은값-재점유-쓰기순서와-메서드이름-신호]]로 확장됐다.
 
 ## 컨텍스트 — unique 위반을 application/adapter/공통핸들러 중 어디서 번역하나
 

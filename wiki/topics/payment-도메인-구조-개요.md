@@ -6,7 +6,7 @@ author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [payment, payment-attempt, aggregate, domain-model, naverpay, pg-gateway]
 created: 2026-05-29
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-05-29-payment-domain-overview]]"
@@ -14,8 +14,18 @@ sources:
 
 # payment 도메인 구조 개요 — 두 Aggregate와 PG 연동 경계
 
-> [!warning] 스냅샷 — 이후 재설계(Issue #174)로 크게 바뀜
-> 이 문서는 **2026-05-29 시점의 payment 도메인 스냅샷**이다. 이 시점엔 결제 식별자 `merchantPayKey`가 아직 `Order`에 unique로 박혀 있고, 결제 도메인 경계 재설계(Issue #174) 이전이다. 이후 06-04 재설계에서 append-only 원장·예약 테이블 분리·order↔payment 경계 재정의가 진행되며 아래 구조와 여러 결정이 진화한다. 현재 설계는 [[payment-append-only-원장과-exists-완료판단]]·[[payment-완료여부-사실조회-hascompletedpayment-srp]]·[[payment-order-도메인분리와-pg격리]]·[[payment-reserve-예약테이블-분리-a안-b안]] 클러스터를 참조. 그래서 `status: draft`.
+> [!warning] 스냅샷 — 이후 두 차례 재설계로 크게 바뀜
+> 이 문서는 **2026-05-29 시점의 payment 도메인 스냅샷**이다. 이 시점엔 결제 식별자 `merchantPayKey`가 아직 `Order`에 unique로 박혀 있고, 결제 도메인 경계 재설계(Issue #174) 이전이다. 그래서 `status: draft`.
+>
+> **1차 재설계(2026-06)** — append-only 원장·예약 테이블 분리·order↔payment 경계 재정의: [[payment-append-only-원장과-exists-완료판단]]·[[payment-완료여부-사실조회-hascompletedpayment-srp]]·[[payment-order-도메인분리와-pg격리]].
+>
+> **2차 재설계(2026-08, 부분환불)** — 경계를 다시 그었다. 이제 이 문서의 구조 서술 대부분이 유효하지 않다.
+> - 예약 테이블이 폐지되고 이중결제 차단이 **결제 행의 활성 슬롯 하나**로 모였다: [[예약테이블-폐지-결제행-활성슬롯-단일화와-사라지는-방어]]·[[배타점유-슬롯-미리잡기-vs-성공시-감지·되돌리기]].
+> - **환불이 독립 aggregate**가 되고 한도 판정을 결제가 맡는다: [[환불-독립-aggregate-한도판정은-결제가-누적액-컬럼]]. 한도의 기준은 결제사가 실제로 승인한 금액이다([[한도-기준은-결제사가-실제로-승인한-금액]]).
+> - 아래 "application 서비스 5개"는 열둘까지 늘었다가 넷으로 재정렬됐다: [[응용계층-서비스-분할-기준-다른-도메인까지-바꿀-때만]].
+> - PG 콜백 인터페이스(`PgCanceller`)가 **결제사마다 어댑터 하나**로 대체됐다: [[결제사-연동타입-인프라-격리와-나가는-호출-읽기제한시간]].
+> - 결과 불명 처리·회수 정책이 통째로 바뀌었다: [[외부-돈-호출-결과어휘-넷과-전송계층-판정-우선]]·[[결과불명-재호출은-같은-멱등키로-새키-결론-뒤집힘]]·[[결과회수-상한-폐지와-백오프-표-통지-반복]]·[[승인은-다시-물어-확정-환불에는-실패-종착이-없다]].
+> - 결제 어휘와 세 층의 역할은 [[결제사-간편결제-구분과-세-층-역할-결과불명-재시도-모델]]에 따로 정리했다.
 
 ## 한 줄 정의
 

@@ -1,12 +1,12 @@
 ---
 type: tradeoff
-status: open
+status: decided
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [payment, partial-cancel, refund, idempotency, unique-constraint, yagni]
 created: 2026-06-04
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-04-payment-order-redesign-decisions]]"
@@ -15,7 +15,12 @@ sources:
 
 # 부분취소 — 모델만 열어두고(amount+SUM) 로직은 전액취소만 구현
 
-부분취소를 지금 구현하지 않되, 나중에 켤 때 모델 수술·마이그레이션이 없도록 데이터 모델만 미리 열어둔 결정이다. 아직 부분취소 설계 자체는 안 했으므로 **열린 tradeoff**로 둔다.
+부분취소를 지금 구현하지 않되, 나중에 켤 때 모델 수술·마이그레이션이 없도록 데이터 모델만 미리 열어둔 결정이다.
+
+> [!note] 닫힘 (2026-08) — 예약해둔 설계가 실제로 이뤄졌고, 이 노트가 예고한 것 중 절반이 맞았다
+> 부분취소 설계가 진행돼 이 tradeoff는 `decided`로 전환한다. **맞은 것:** "취소요청 단위 고유키 + 한도 검증"이라는 해법 방향, "amount는 신원이 아니다", 4컬럼 unique로는 표현 불가.
+> **틀린 것:** 아래 "데이터 모델 변경 0, 잔액 조회 변경 0"은 성립하지 않았다. 잔액의 정본이 `SUM(APPROVE) − SUM(CANCEL)`(금액 기준)이 아니라 **주문 품목의 취소수량**(수량 기준)으로 갔다 — 금액 기준은 접수 시점 검증에 쓸 수 없기 때문이다([[부분취소-잔액-정본-수량기준-상태무관-누적]]). 유일 제약도 문자열 단일 컬럼으로 교체됐다([[결제사건-테이블분리-기각과-유일제약-문자열-단일컬럼-교체]]).
+> 스코프·입력 형태는 [[부분취소-스코프-배송전-품목수량-기반-금액입력-기각]], 멱등키 스코프는 [[취소요청키-유일범위-주문단위-와-같은키-다른내용-거부]], 최종 모델은 [[환불-독립-aggregate-한도판정은-결제가-누적액-컬럼]].
 
 ## 방침 — 전액만 구현·모델만 개방(YAGNI)
 

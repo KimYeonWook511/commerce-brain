@@ -1,13 +1,13 @@
 ---
 type: decision
-status: accepted
+status: superseded
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [payment, reservation, schema-design, append-only, not-null, mysql]
 created: 2026-06-04
-updated: 2026-07-14
-superseded_by: null
+updated: 2026-08-17
+superseded_by: "[[예약테이블-폐지-결제행-활성슬롯-단일화와-사라지는-방어]]"
 sources:
   - "[[raw/sessions/backend/2026-06-04-payment-reserve-table-split-b-option]]"
   - "[[raw/sessions/backend/2026-06-05-pr-205-payment-redesign-review-fixes]]"
@@ -15,6 +15,10 @@ sources:
 ---
 
 # RESERVE 거주지 분리 — 단일 결제 테이블(A안)에서 예약/사건 두 테이블(B안)로
+
+> [!warning] 뒤집힘 (2026-08) — 예약 테이블이 폐지되고 결제 행 하나로 합쳐졌다
+> 부분환불 도입을 위해 모델을 다시 그으면서 **예약 테이블을 없애고 결제창을 띄우기 전에 결제 행을 만드는 쪽**으로 갔다([[예약테이블-폐지-결제행-활성슬롯-단일화와-사라지는-방어]]). 아래 B안의 근거(RESERVE의 성격이 사건 테이블을 오염시킨다, `pg_payment_id NOT NULL` 복원, status 의미 혼재)는 그때 **이중결제 방어가 두 곳에 흩어진다**는 반대 근거에 밀렸다.
+> 살아남은 것은 **"조건 맞을 때만 값, 아니면 NULL"이라는 부분 유일 표현**이며, 그것을 비웠다 같은 값으로 다시 잡는 흐름의 물리 설계는 [[유일슬롯-비우고-같은값-재점유-쓰기순서와-메서드이름-신호]]로 이어진다.
 
 ## A안 배경 — 단일 테이블 시도
 

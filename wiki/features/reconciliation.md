@@ -1,23 +1,46 @@
 ---
 type: moc
 tags: [reconciliation]
-updated: 2026-07-14
+updated: 2026-08-17
 ---
 
 # reconciliation (MOC)
 
 `tags: [reconciliation]` 를 단 노트의 생성된 뷰. 진실은 각 노트의 frontmatter `tags` 에 있고, 이 목록은 그 거울이다(덮어쓰기 재생성).
 
-총 9개.
+총 23개.
 
 ## decisions
 
-- [[결과불명-unknown-보존-alreadycomplete-cancel-경로확장]]
-- [[결제-후처리-대상식별-status중심-재설계]]
-- [[결제-escalation-종착통지-escalatedAt-직교필드]]
-- [[대사-확정-검증보상-대칭-재승인없음]]
-- [[대사-keep-waiting-backoff-next-reconcile-at]]
-- [[미확정차단-대사스캔-정합성-starvation-escalation]]
 - [[paid-order-취소환불-단일tx-의도와-standalone-cancel-대사]]
 - [[payment-status-사실만-분류는-정책계산-manual-review-철회]]
 - [[payment-unknown-결과불명-처리와-예외분류]]
+- [[결과불명-unknown-보존-alreadycomplete-cancel-경로확장]]
+- [[결과불명-재호출은-같은-멱등키로-새키-결론-뒤집힘]]
+- [[결과회수-상한-폐지와-백오프-표-통지-반복]]
+- [[결제-escalation-종착통지-escalatedAt-직교필드]] `superseded`
+- [[결제-후처리-대상식별-status중심-재설계]]
+- [[결제사-연동타입-인프라-격리와-나가는-호출-읽기제한시간]]
+- [[네이버페이-환불-이력-지목근거-보내기전-우리가-정하는-값]]
+- [[대사-keep-waiting-backoff-next-reconcile-at]] `superseded`
+- [[대사-확정-검증보상-대칭-재승인없음]]
+- [[미확정차단-대사스캔-정합성-starvation-escalation]]
+- [[배타점유-슬롯-미리잡기-vs-성공시-감지·되돌리기]]
+- [[승인은-다시-물어-확정-환불에는-실패-종착이-없다]]
+- [[외부-돈-호출-결과어휘-넷과-전송계층-판정-우선]]
+- [[자식-환불-자기-낙관락-부모버전은-불변식이-바뀔때만]]
+- [[취소사건에-발생원인·품목내역-기록-대사는-주문을-안-읽는다]]
+- [[취소접수-트랜잭션경계-구현을-결정에-맞춘다-전파속성-잔재]]
+- [[회수배치가-주문상태를-묻지-않는다-확인대신-전제를-지킨다]]
+
+## tradeoffs
+
+- [[부분취소-외부취소와-우리-기록-사이-대응관계-부재]]
+
+## topics
+
+- [[결제사-간편결제-구분과-세-층-역할-결과불명-재시도-모델]]
+
+## knowledge
+
+- [[종류·테이블-분리시-조용한-회귀와-전수조사-대상]]

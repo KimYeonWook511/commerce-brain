@@ -1,18 +1,22 @@
 ---
 type: decision
-status: accepted
+status: superseded
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [payment, reconciliation, backoff, starvation, next-reconcile-at, escalation, scheduler]
 created: 2026-06-19
-updated: 2026-07-14
-superseded_by: null
+updated: 2026-08-17
+superseded_by: "[[결과회수-상한-폐지와-백오프-표-통지-반복]]"
 sources:
   - "[[raw/sessions/backend/2026-06-19-pr-263-reconcile-keep-waiting-backoff]]"
 ---
 
 # 대사 스캔 KEEP_WAITING backoff — status-직교 next_reconcile_at 필드로 재조회를 미룬다
+
+> [!warning] 뒤집힘 (2026-08) — 고정 간격 근거가 상한 폐지로 사라졌다
+> 아래 결정 3이 지수 backoff를 뺀 근거는 **"스캔 윈도우 상한(6시간)이 한 건당 조회 횟수를 이미 bound한다"**였다. 그 상한이 통째로 폐지되면서([[결과회수-상한-폐지와-백오프-표-통지-반복]]) 그 근거가 사라져 **회차마다 벌어지는 간격 표(`10초·30초·2분·5분·10분`)**로 갔다. 상한을 없앤 이유는 "멈추면 회원이 할 수 있는 일이 없다"였다.
+> **살아남은 것:** 부가 시점을 상태머신에 끼워 넣지 않고 직교 필드로 두는 패턴, "어디에 적용하지 않을지가 설계의 일부"라는 판단, 그리고 wait 분기에만 기록해 두 시점 필드가 경합하지 않게 한 것. 다만 재전송이 상태를 되돌리지 않게 된 뒤로는 **"쓰지 않아 재스캔되는 건"과 "다시 부른 건"의 구분이 사라져 부른 시각 갱신 하나로 통합됐다.**
 
 ## 컨텍스트 — KEEP_WAITING이 행을 안 써 재스캔·PG 낭비·starvation
 

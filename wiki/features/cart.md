@@ -1,7 +1,7 @@
 ---
 type: moc
 tags: [cart]
-updated: 2026-07-14
+updated: 2026-08-17
 ---
 
 # cart (MOC)
@@ -12,9 +12,12 @@ updated: 2026-07-14
 
 ## decisions
 
-- [[cart-도메인-골격-cartitem-단일-aggregate]]
-- [[cart-동시성-낙관락-processor-분리-retry]]
-- [[cart-회원당-row-상한-미도입]] _(open)_
 - [[cart-add-product-존재-상태-검증]]
 - [[cart-delete-미존재-4xx-entity-경유-삭제]]
 - [[cart-path-id-검증-spec을-코드에-맞춤]]
+- [[cart-도메인-골격-cartitem-단일-aggregate]]
+- [[cart-동시성-낙관락-processor-분리-retry]]
+
+## tradeoffs
+
+- [[cart-회원당-row-상한-미도입]] `open`

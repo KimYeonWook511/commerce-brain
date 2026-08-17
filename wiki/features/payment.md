@@ -1,55 +1,99 @@
 ---
 type: moc
 tags: [payment]
-updated: 2026-07-14
+updated: 2026-08-17
 ---
 
 # payment (MOC)
 
 `tags: [payment]` 를 단 노트의 생성된 뷰. 진실은 각 노트의 frontmatter `tags` 에 있고, 이 목록은 그 거울이다(덮어쓰기 재생성).
 
-총 38개.
+총 79개.
 
 ## decisions
 
-- [[결과불명-unknown-보존-alreadycomplete-cancel-경로확장]]
-- [[결제-도메인-orm-선택과-jpa-오염-격리-실용진영]]
-- [[결제-후처리-대상식별-status중심-재설계]]
-- [[결제-escalation-종착통지-escalatedAt-직교필드]]
-- [[결제승인완료-보상-완료우선-이중결제-adapter매핑]]
-- [[대사-확정-검증보상-대칭-재승인없음]]
-- [[대사-keep-waiting-backoff-next-reconcile-at]]
-- [[도메인-팩토리-long-id-시그니처-전환과-정책-표면화]]
-- [[미확정차단-대사스캔-정합성-starvation-escalation]]
-- [[보상판단-payment-존재-lock-대신-db-unique]]
-- [[보상흐름-설계-payment-application-책임-pgcanceller-dispatcher]]
-- [[예약-동시소비-가드-version-vs-cas]]
-- [[이중결제보상-완료가드-제거-pgpaymentid-무조건취소]]
-- [[주문-이중결제-앞단-진입차단-예약조회-단일화]]
 - [[paid-order-취소환불-단일tx-의도와-standalone-cancel-대사]]
-- [[payment-낙관락-충돌처리-3계층-흡수는-트랜잭션-밖]]
-- [[payment-낙관적-락-도입-왜-비관-아님]]
-- [[payment-동시성-unique-vs-lock-gap-lock회피]]
-- [[payment-부분취소-모델만-열고-구현-보류]] _(open)_
-- [[payment-완료여부-사실조회-hascompletedpayment-srp]]
-- [[payment-이중결제-reserve따닥-mysql-null트릭-unique]]
 - [[payment-amount-mismatch-이중검증-409-vs-400-분리]]
 - [[payment-append-only-원장과-exists-완료판단]]
 - [[payment-attempt-네이밍-정리와-refactor-경계]]
+- [[payment-order-facade-결합끊기-tell-dont-ask]]
 - [[payment-order-도메인분리와-pg격리]]
 - [[payment-order-트랜잭션-경계-cross-aggregate-단일tx]]
-- [[payment-order-facade-결합끊기-tell-dont-ask]]
-- [[payment-reserve-예약테이블-분리-a안-b안]]
-- [[payment-reserve-ready-흐름-재설계-expiresat-재사용만료]]
+- [[payment-reserve-ready-흐름-재설계-expiresat-재사용만료]] `superseded`
+- [[payment-reserve-예약테이블-분리-a안-b안]] `superseded`
 - [[payment-status-사실만-분류는-정책계산-manual-review-철회]]
 - [[payment-unknown-결과불명-처리와-예외분류]]
+- [[payment-낙관락-충돌처리-3계층-흡수는-트랜잭션-밖]]
+- [[payment-낙관적-락-도입-왜-비관-아님]]
+- [[payment-동시성-unique-vs-lock-gap-lock회피]]
+- [[payment-완료여부-사실조회-hascompletedpayment-srp]]
+- [[payment-이중결제-reserve따닥-mysql-null트릭-unique]]
 - [[paymentattempt-상태전이-도메인-검증-defensive]]
 - [[paymentattempt-호출정책-문서-javadoc-archunit-보류]]
 - [[pg-승인-예외-경계-요청전송시점]]
 - [[requires-new-격리-제거-보상판단-트랜잭션정책]]
 - [[sql-translator-빈-제거-제약명-이중결제-식별]]
 - [[unique-위반-예외번역-infra-adapter-경계와-flush-타이밍]]
+- [[검증-전에-채우는-외부값에-유일제약-금지]]
+- [[결과불명-unknown-보존-alreadycomplete-cancel-경로확장]]
+- [[결과불명-재호출은-같은-멱등키로-새키-결론-뒤집힘]]
+- [[결과회수-상한-폐지와-백오프-표-통지-반복]]
+- [[결제-escalation-종착통지-escalatedAt-직교필드]] `superseded`
+- [[결제-도메인-orm-선택과-jpa-오염-격리-실용진영]]
+- [[결제-부분환불-도입-현행한계-4가지와-테이블분리]] `superseded`
+- [[결제-후처리-대상식별-status중심-재설계]]
+- [[결제사-연동타입-인프라-격리와-나가는-호출-읽기제한시간]]
+- [[결제사건-테이블분리-기각과-유일제약-문자열-단일컬럼-교체]]
+- [[결제승인완료-보상-완료우선-이중결제-adapter매핑]]
+- [[네이버페이-환불-이력-지목근거-보내기전-우리가-정하는-값]]
+- [[대사-keep-waiting-backoff-next-reconcile-at]] `superseded`
+- [[대사-확정-검증보상-대칭-재승인없음]]
+- [[도메인-정책-빈-등록-도메인이-설정을-모르게]]
+- [[도메인-팩토리-long-id-시그니처-전환과-정책-표면화]]
+- [[돈정합성-우선-경계넘는-트랜잭션-셋-허용과-셀-수-있게]]
+- [[동시도착은-선점층이-받고-처리중-전용응답]]
+- [[멱등키-세-값-분리와-요청멱등키는-호출자가-발급]]
+- [[무결성위반-도메인예외-번역을-제약이름으로-가른다]]
+- [[미확정차단-대사스캔-정합성-starvation-escalation]]
+- [[배타점유-슬롯-미리잡기-vs-성공시-감지·되돌리기]]
+- [[보상판단-payment-존재-lock-대신-db-unique]]
+- [[보상흐름-설계-payment-application-책임-pgcanceller-dispatcher]]
+- [[부분취소-동시성-주문행-단일잠금과-캐시겹-미도입]]
+- [[부분취소-스코프-배송전-품목수량-기반-금액입력-기각]]
+- [[부분취소-잔액-정본-수량기준-상태무관-누적]]
+- [[승인은-다시-물어-확정-환불에는-실패-종착이-없다]]
+- [[예약-동시소비-가드-version-vs-cas]]
+- [[예약테이블-폐지-결제행-활성슬롯-단일화와-사라지는-방어]]
+- [[외부-돈-호출-결과어휘-넷과-전송계층-판정-우선]]
+- [[외부-호출기록-aggregate-밖-낙관락-없는-쌓기전용]]
+- [[유일슬롯-비우고-같은값-재점유-쓰기순서와-메서드이름-신호]]
+- [[응용계층-서비스-분할-기준-다른-도메인까지-바꿀-때만]]
+- [[이중결제보상-완료가드-제거-pgpaymentid-무조건취소]]
+- [[이중환불-최종방어선-잔액대조-도입]] `superseded`
+- [[자식-환불-자기-낙관락-부모버전은-불변식이-바뀔때만]]
+- [[잔액대조-옵션-미사용-공급자-권장의-전제-확인]]
+- [[잔여전부취소-별도주소-미신설과-전액취소-명명-기각]]
+- [[재고복구-트랜잭션-맨뒤-배치와-비관락-경합-계측갈래]]
+- [[전용-종결상태-돈이-나갔다-돌아오는-중]]
+- [[조회-또는-생성-메서드-해체-조회·생성·기존요청대조-셋]]
+- [[주문-금액-모델-도출·기록·스냅샷-3분류와-청구액-승인액-분리]]
+- [[주문-이중결제-앞단-진입차단-예약조회-단일화]]
+- [[취소사건에-발생원인·품목내역-기록-대사는-주문을-안-읽는다]]
+- [[취소요청키-유일범위-주문단위-와-같은키-다른내용-거부]]
+- [[취소접수-트랜잭션경계-구현을-결정에-맞춘다-전파속성-잔재]]
+- [[한도-기준은-결제사가-실제로-승인한-금액]]
+- [[환불-독립-aggregate-한도판정은-결제가-누적액-컬럼]]
+- [[환불사유-목록값-두-경로-한-사건-회원노출-필터]]
+- [[회수배치가-주문상태를-묻지-않는다-확인대신-전제를-지킨다]]
+
+## tradeoffs
+
+- [[payment-부분취소-모델만-열고-구현-보류]]
+- [[간편결제-직접연동-vs-결제대행사-하이브리드-전략-검토]] `open`
+- [[부분취소-외부취소와-우리-기록-사이-대응관계-부재]]
 
 ## topics
 
-- [[payment-도메인-구조-개요]] _(draft)_
+- [[payment-도메인-구조-개요]] `draft`
+- [[결제사-간편결제-구분과-세-층-역할-결과불명-재시도-모델]]
+- [[네이버페이-환불-api-실측-기록]]

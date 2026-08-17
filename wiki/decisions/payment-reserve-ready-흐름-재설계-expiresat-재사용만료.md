@@ -1,13 +1,13 @@
 ---
 type: decision
-status: accepted
+status: superseded
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [payment, reservation, idempotency, expiration, redirect, api-naming]
 created: 2026-06-04
-updated: 2026-07-14
-superseded_by: null
+updated: 2026-08-17
+superseded_by: "[[예약테이블-폐지-결제행-활성슬롯-단일화와-사라지는-방어]]"
 sources:
   - "[[raw/sessions/backend/2026-06-04-payment-order-redesign-decisions]]"
   - "[[raw/sessions/backend/2026-06-05-pr-205-payment-redesign-review-fixes]]"
@@ -15,6 +15,10 @@ sources:
 ---
 
 # reserve(ready) 흐름 재설계 — RESERVED 예약 행 생성·재사용·만료
+
+> [!warning] 뒤집힘 (2026-08) — 예약 행이 없어지고 활성 슬롯 빼앗기로 대체됐다
+> 예약 테이블이 폐지되면서([[예약테이블-폐지-결제행-활성슬롯-단일화와-사라지는-방어]]) 아래의 재사용·만료·lazy 회수 흐름 전체가 **"같은 주문으로 다시 요청이 오면 직전 결제 행을 종결하고 슬롯을 넘겨받는다"**로 바뀌었다. 넘겨받을 수 있는 대상은 **아직 승인을 부르지 않은 행뿐**이며 그 경계의 근거는 [[배타점유-슬롯-미리잡기-vs-성공시-감지·되돌리기]].
+> 살아남은 것은 두 가지다 — **박제된 점유를 시간·상태로 자동 복구해야 한다**는 문제 인식, 그리고 **"남의 것이면 없음으로 답한다"는 신원 확인**이 결제 행으로 이관됐다는 사실.
 
 결제창 준비 단계(ready = reserve)를 재설계한 결정이다. 재설계 동기와 도메인 분리는 허브 [[payment-order-도메인분리와-pg격리]] 참조.
 
