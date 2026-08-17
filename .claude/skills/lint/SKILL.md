@@ -22,6 +22,17 @@ commerce-brain wiki 의 health check 운영 절차.
 ### 3. 오래된 주장
 `updated:` 가 낡은 페이지, 최근 raw 가 갱신했는데 미반영. `status: outdated`/`superseded` 후보.
 
+**`updated:` 가 거짓인지부터 대조한다.** 분포만 세면 "안 건드린 노트"와 "건드렸는데 표기를 안 고친 노트"가 구분되지 않는다. git 으로 실제 변경 여부와 대조한다.
+
+```bash
+git -c core.quotepath=false diff --name-only <직전-lint-커밋>..HEAD -- wiki/ | while IFS= read -r f; do
+  [ -f "$f" ] || continue
+  grep -q "^updated: <직전-날짜>$" "$f" && echo "STALE $f"
+done
+```
+
+`core.quotepath=false` 가 없으면 한글 파일명이 octal escape 로 나와 `[ -f ]` 가 전부 실패하고 **루프가 조용히 0건을 반환한다.** 본문만 `Edit` 로 고치면 frontmatter 가 안 따라오므로 이 대조가 유일한 검출 수단이다.
+
 ### 4. 계약 drift *(신규)*
 `sources` 에 `{repo, path}` 가 있는 companion 노트에서, 정본 코드가 바뀐 듯한데 wiki 요약 `updated:` 는 그대로인 경우. 정본을 read-only 로 확인해 재요약 제안.
 
