@@ -70,6 +70,9 @@ catch를 걷어내면서 application 서비스(`AuthTokenIssueService`, `AuthTok
 - **infra adapter ERROR 로그만으로 운영 인지가 부족하면** 핸들러 로그/메트릭 도입 검토.
 - 관련: strict 정책 대신 soft-fail을 택한 [[redis-장애-strict-정책-soft-fail-기각]], refresh token 저장소 자체의 [[refreshtokenstore-delete-제거-로그아웃-미구현]]·[[jwt-redis-하이브리드-rtr-ttl-근거]].
 
+> [!note] 같은 판단축의 후속
+> 여기서 쓴 "인프라 예외를 도메인 예외로 옮기고 도메인 전용 어드바이스가 받는다"가 결제 쪽에서 한 번 더 정밀해졌다 — 무결성 위반은 한 타입으로 도착해 **타입만으로는 무엇에 부딪혔는지 알 수 없어 제약 이름으로 가른다**([[무결성위반-도메인예외-번역을-제약이름으로-가른다]]). 번역 여부의 판단축("안쪽이 그 예외를 실제로 다루는가")은 양쪽이 공유한다.
+
 ## 근거
 
 - [[raw/sessions/backend/2026-06-03-pr-197-auth-redis-exception-mapping]]

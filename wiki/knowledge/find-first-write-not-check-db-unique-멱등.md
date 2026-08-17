@@ -4,9 +4,9 @@ status: stable
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [find-first, db-unique, idempotency, concurrency, exception-handling, convention]
+tags: [find-first, unique-constraint, idempotency, concurrency, exception-handling, convention]
 created: 2026-05-29
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-05-29-payment-domain-overview]]"

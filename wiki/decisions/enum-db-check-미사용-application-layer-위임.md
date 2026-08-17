@@ -48,6 +48,9 @@ Hibernate 차원에서 CHECK 자동 생성을 차단하는 게 근본책이다. 
 
 외부 시스템이 같은 DB에 INSERT하는 시나리오(마이크로서비스 분리, BI/ETL 도구 직접 접근, 운영자 raw SQL 수정)가 일상화되면, application layer만으로는 안전망이 부족해져 DB CHECK 재도입을 검토해야 한다. 현재 전제(단일 INSERT 경로)가 깨지는 시점이 곧 재검토 시점이다.
 
+> [!note] 인접 결정
+> 반대편 축은 [[multi-column-unique-length-명시-컨벤션]]이다 — 그쪽은 스키마에 **명시할 것**을 정했고 이쪽은 **안 맡길 것**을 정했다.
+
 ## 근거
 
 - [[raw/sessions/backend/2026-06-02-pr-184-flyway-silent-drift]]

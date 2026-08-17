@@ -25,7 +25,7 @@ updated: 2026-08-17
 
 ## 일반 태그 (성격·기능)
 
-2026-07-14 최초 대규모 ingest로 등재하고 2026-08-17 ingest·lint에서 갱신했다. canonical = 소문자·하이픈·단수형. 아래 개수는 2026-08-17 기준이며 사용처 다수(5+)인 태그 위주다. 전체 태그는 각 노트 frontmatter가 진실이다. 태그가 **269종**(그중 싱글턴 131종)으로 산발이 있어 **동의어 통합·싱글턴 정리는 lint 후보**다.
+2026-07-14 최초 대규모 ingest로 등재하고 2026-08-17 ingest·lint(2회)에서 갱신했다. canonical = 소문자·하이픈·단수형. 아래 개수는 2026-08-17 기준이며 사용처 다수(5+)인 태그 위주다. 전체 태그는 각 노트 frontmatter가 진실이다. 태그가 **259종**(그중 싱글턴 123종)으로 산발이 있어 **동의어 통합·싱글턴 정리는 lint 후보**다.
 
 ### 도메인·기능
 
@@ -102,7 +102,13 @@ updated: 2026-08-17
   `schema-design`→`schema` · `reconcile`→`reconciliation` · `authentication`→`auth` ·
   `duplicate-payment`·`double-charge`→`double-payment` · `save-and-flush`·`save-flush`→`flush`
 - **통합하지 않기로 한 것:** `security`(7)를 `auth`(10)에 합치지 않는다 — 결제 노트에서 `security` 는 **접근 제어**를 뜻하고 인증 도메인과 다른 축이다.
-- **미통합(다음 lint 대상):** `infra-adapter`→`adapter`, `hibernate` 를 `jpa` 하위로 정리할지, `spec-review`·`design-review` 통합, `batch`·`spring-batch`, `pg`→`pg-gateway`, `cancel`→`partial-cancel` 여부.
+- **2026-08-17 lint 2회차에서 추가 통합:** `infra-adapter`→`adapter` · `pg`→`pg-gateway` · `db-unique`→`unique-constraint` · `cross-aggregate-reference`→`cross-aggregate` · `foreign-key`→`fk` · `unknown-state`→`unknown-status` · `documentation-drift`·`drift`·`spec-drift`→`stale-doc` · `save`→`flush`. **269→259종, 싱글턴 131→123.**
+- **통합하지 않기로 한 것 (판단 근거):**
+  - `hibernate`(9) / `jpa`(15) — 7개 노트가 **둘 다** 달고 있어 계층 관계다. 상위/하위로 선언만 하고 병합하지 않는다.
+  - `batch`/`spring-batch`, `error-category`/`error-code`, `starvation`/`reconciliation` — 하위 개념이 정보를 담는다.
+  - `payment-integrity`·`order-number`·`concurrency-test` — 상위 태그의 하위 개념이라 병합하면 정보가 사라진다.
+  - `ci`~re**conciliation**, `postprocess-policy`~**process** 같은 문자열 유사 후보는 **부분 문자열 우연**이라 기각했다.
+- **폐기한 정리 기준:** "자기 사용처 전부가 더 큰 태그와 함께 달린 태그는 잉여"로 재면 184종이 걸린다. **그 기준은 틀렸다** — `gap-lock` 이 `concurrency` 와 항상 함께 달려도 그 태그는 여전히 정보를 담는다. 싱글턴 123종은 대부분 이런 정당한 구체 태그이므로 일괄 정리 대상이 아니다.
 
 ### 상위/하위 관계
 

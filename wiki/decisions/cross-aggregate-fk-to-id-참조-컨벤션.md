@@ -4,9 +4,9 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [ddd, aggregate, cross-aggregate-reference, foreign-key, convention, migration]
+tags: [ddd, aggregate, cross-aggregate, fk, convention, migration]
 created: 2026-05-28
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-05-28-pr-166-cart-review-cycle]]"

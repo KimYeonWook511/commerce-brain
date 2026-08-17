@@ -4,9 +4,9 @@ status: stable
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [database, schema, hibernate, drift, jpa, mysql]
+tags: [database, schema, hibernate, stale-doc, jpa, mysql]
 created: 2026-06-01
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-02-pr-184-flyway-silent-drift]]"

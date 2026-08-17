@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 wiki 페이지를 타입별로 한 줄 요약한다. **ingest 마다 갱신**한다. 분류의 진실은 각 노트 frontmatter이고, 이 카탈로그는 탐색 보조다.
 
-총 154개 노트 · MOC 33개.
+총 155개 노트 · MOC 33개.
 
 ## decisions (118)
 
@@ -166,9 +166,10 @@ wiki 페이지를 타입별로 한 줄 요약한다. **ingest 마다 갱신**한
 
 _(없음)_
 
-## topics (11)
+## topics (12)
 
-- [[payment-도메인-구조-개요]] `draft` — 두 Aggregate와 PG 연동 경계 (2026-06·08 재설계로 스냅샷)
+- [[payment-도메인-현재-구조-2026-08]] — 표 넷·불변식 하나·경계 셋. 현재 구조의 개념 지도
+- [[payment-도메인-구조-개요]] `outdated` — 2026-05-29 스냅샷 (두 차례 재설계로 대체)
 - [[order-도메인-구조-개요]] — 엔티티·상태·서비스 경계 지도
 - [[product-도메인-구조-개요]] — 공개조회/관리자관리 분리와 기반 도메인 위치
 - [[stock-도메인-구조-개요]] — 차감·복구·이력·동시성 격리의 세 축
@@ -227,9 +228,9 @@ _(없음)_
 
 도메인·기능·기법 축의 태그만 MOC로 만든다(5개+). 프로세스·메타 축(`convention` 21·`process` 12·`verification` 8 등)은 `knowledge/`가 담당한다.
 
-- **도메인·기능** — [[payment]] (79) · [[refund]] (30) · [[order]] (27) · [[partial-cancel]] (18) · [[stock]] (11) · [[product]] (7) · [[auth]] (10) · [[cart]] (6)
-- **멱등·동시성·제약** — [[idempotency]] (32) · [[concurrency]] (26) · [[unique-constraint]] (21) · [[double-payment]] (16) · [[optimistic-lock]] (14) · [[pessimistic-lock]] (8) · [[transaction-boundary]] (20)
-- **회수·보상·결과불명** — [[reconciliation]] (25) · [[escalation]] (12) · [[unknown-status]] (8) · [[compensation]] (15) · [[saga]] (6)
+- **도메인·기능** — [[payment]] (80, 하위 축 인덱스) · [[refund]] (31) · [[order]] (27) · [[partial-cancel]] (19) · [[stock]] (11) · [[product]] (7) · [[auth]] (10) · [[cart]] (6)
+- **멱등·동시성·제약** — [[idempotency]] (32) · [[concurrency]] (26) · [[unique-constraint]] (24) · [[double-payment]] (16) · [[optimistic-lock]] (14) · [[pessimistic-lock]] (8) · [[transaction-boundary]] (20)
+- **회수·보상·결과불명** — [[reconciliation]] (25) · [[escalation]] (12) · [[unknown-status]] (10) · [[compensation]] (15) · [[saga]] (6)
 - **예외·에러** — [[exception-handling]] (21) · [[error-code]] (11)
-- **구조·연동** — [[ddd]] (13) · [[aggregate]] (10) · [[adapter]] (10) · [[naverpay]] (19) · [[pg-gateway]] (15) · [[reservation]] (9)
+- **구조·연동** — [[ddd]] (13) · [[aggregate]] (10) · [[adapter]] (11) · [[naverpay]] (20) · [[pg-gateway]] (16) · [[reservation]] (9)
 - **영속성·스키마** — [[jpa]] (15) · [[mysql]] (13) · [[redis]] (12) · [[schema]] (11) · [[migration]] (8)

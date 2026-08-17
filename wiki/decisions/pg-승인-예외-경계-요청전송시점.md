@@ -4,7 +4,7 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [exception-handling, payment, pg, naverpay, double-payment, unknown-state, idempotency, reconciliation, adapter, external-integration]
+tags: [exception-handling, payment, pg-gateway, naverpay, double-payment, unknown-status, idempotency, reconciliation, adapter, external-integration]
 created: 2026-06-07
 updated: 2026-08-17
 superseded_by: null

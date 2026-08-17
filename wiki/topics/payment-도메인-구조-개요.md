@@ -1,6 +1,6 @@
 ---
 type: topic
-status: draft
+status: outdated
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
@@ -14,8 +14,10 @@ sources:
 
 # payment 도메인 구조 개요 — 두 Aggregate와 PG 연동 경계
 
-> [!warning] 스냅샷 — 이후 두 차례 재설계로 크게 바뀜
-> 이 문서는 **2026-05-29 시점의 payment 도메인 스냅샷**이다. 이 시점엔 결제 식별자 `merchantPayKey`가 아직 `Order`에 unique로 박혀 있고, 결제 도메인 경계 재설계(Issue #174) 이전이다. 그래서 `status: draft`.
+> [!warning] `outdated` — 현재 구조는 [[payment-도메인-현재-구조-2026-08]]를 보라
+> 이 문서는 **2026-05-29 시점의 payment 도메인 스냅샷**이다. 이 시점엔 결제 식별자 `merchantPayKey`가 아직 `Order`에 unique로 박혀 있고, 결제 도메인 경계 재설계(Issue #174) 이전이다. 이후 두 차례 재설계로 **아래 구조 서술 대부분이 유효하지 않다.**
+>
+> **지우지 않고 남기는 이유:** 여기 적힌 "그때 무엇을 왜 그렇게 뒀나"는 이후 결정들이 무엇을 뒤집었는지 읽는 데 필요하다. 다만 **구조를 확인하러 온 사람은 여기서 멈추면 안 된다.**
 >
 > **1차 재설계(2026-06)** — append-only 원장·예약 테이블 분리·order↔payment 경계 재정의: [[payment-append-only-원장과-exists-완료판단]]·[[payment-완료여부-사실조회-hascompletedpayment-srp]]·[[payment-order-도메인분리와-pg격리]].
 >

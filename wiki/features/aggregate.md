@@ -8,7 +8,7 @@ updated: 2026-08-17
 
 `tags: [aggregate]` 를 단 노트의 생성된 뷰. 진실은 각 노트의 frontmatter `tags` 에 있고, 이 목록은 그 거울이다(덮어쓰기 재생성).
 
-총 10개.
+총 11개.
 
 ## decisions
 
@@ -24,4 +24,5 @@ updated: 2026-08-17
 ## topics
 
 - [[order-도메인-구조-개요]]
-- [[payment-도메인-구조-개요]] `draft`
+- [[payment-도메인-구조-개요]] `outdated`
+- [[payment-도메인-현재-구조-2026-08]]

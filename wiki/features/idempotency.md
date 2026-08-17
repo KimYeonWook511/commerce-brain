@@ -42,7 +42,7 @@ updated: 2026-08-17
 
 ## tradeoffs
 
-- [[payment-부분취소-모델만-열고-구현-보류]]
+- [[payment-부분취소-모델만-열고-구현-보류]] `decided`
 
 ## topics
 

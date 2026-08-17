@@ -67,6 +67,9 @@ length 값을 문서·검수에서 적을 때 **엔티티 선언 순서가 아�
 - **타 엔티티 multi-column unique 자동 검증 부재.** 현재 인벤토리(`Order`·`CartItem`·`ProcessedEvent`)는 한도 안임을 확인했지만, 신규 추가 시 한도 초과를 자동 검증하는 장치는 없다 — 이 결정을 참고해 length를 명시해야 한다.
 - 이 세션에서 CI flake 원천이던 `errors.anyMatch(DataIntegrityViolationException)` 단언 제거(결과 상태 `count == 1` invariant + 예외 분류 helper만 남김)와 HikariCP pool 클래스 단위 inline 설정도 함께 처리했다 — 동시성 테스트 단언 전략은 [[동시성-테스트-작성-규칙과-단언-전략]] 참조. 태그 차원 재설계(#177)는 [[테스트-태그-2축-모델-ci-잡-분리]]로 이어졌다.
 
+> [!note] 인접 결정 — 같은 "DB에 뭘 맡기고 뭘 안 맡기나" 축
+> 이 노트가 **스키마에 명시할 것**(복합 unique의 컬럼 length)을 정한 반면, [[enum-db-check-미사용-application-layer-위임]]은 **스키마에 안 맡길 것**(enum 유효성)을 정했다. 둘을 함께 보면 이 저장소가 DB 제약을 어디까지 쓰는지가 드러난다 — **동시성·유일성은 DB에 맡기고 값 유효성은 애플리케이션이 진다.**
+
 ## 근거
 
 - [[raw/sessions/backend/2026-06-01-pr-179-unique-key-length]]
