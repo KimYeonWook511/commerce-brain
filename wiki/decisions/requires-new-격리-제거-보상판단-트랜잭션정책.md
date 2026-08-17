@@ -4,9 +4,9 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [transaction, spring, compensation, payment, requires-new, jpa]
+tags: [transaction-boundary, spring, compensation, payment, requires-new, jpa]
 created: 2026-06-01
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-01-pr-183-requires-new-cleanup]]"

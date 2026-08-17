@@ -4,9 +4,9 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [payment, domain-service, srp, naming, idempotency, compensation]
+tags: [payment, domain-service, srp, naming-convention, idempotency, compensation]
 created: 2026-06-02
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-02-pr-192-payment-completion-fact-query]]"

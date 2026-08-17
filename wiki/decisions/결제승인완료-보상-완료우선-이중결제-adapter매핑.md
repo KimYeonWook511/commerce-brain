@@ -4,9 +4,9 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [exception-handling, payment, compensation, duplicate-payment, reconcile, adapter, unique-constraint, save-and-flush, idempotency, dead-code, transient-failure]
+tags: [exception-handling, payment, compensation, double-payment, reconciliation, adapter, unique-constraint, flush, idempotency, dead-code, transient-failure]
 created: 2026-06-08
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-08-pr-224-payment-compensation-exception-findings]]"
@@ -14,6 +14,12 @@ sources:
 ---
 
 # 결제 승인 완료 경로 보상·예외 처리 정리 — 완료 우선 + 이중결제 adapter 매핑
+
+> [!note] 진화 (2026-08) — 이중결제 식별의 갈림 지점이 제약 이름 기반으로 정밀해졌다
+> 아래의 "이중결제를 adapter에서 매핑한다"는 배치는 유효하고, 그 위에 둘이 더해졌다.
+> - **무결성 위반을 타입이 아니라 제약 이름으로 가른다.** 한 트랜잭션이 네 테이블을 저장하게 되면서 유일 제약 위반과 NOT NULL·외래 키 위반이 같은 타입으로 섞여 들어오게 됐고, "이 제약에 부딪히면 뜻이 하나"라는 전제가 깨졌다: [[무결성위반-도메인예외-번역을-제약이름으로-가른다]].
+> - **실측으로 확인된 것 하나** — 이 구성에서는 중복 키 전용 예외(`DuplicateKeyException`)가 **아예 생성되지 않는다.** 하위 타입으로 좁히면 "좁힌다"가 아니라 "아무것도 안 잡는다"가 된다: [[예외타입-실측과-테스트가-명세를-넘어-단언하는-것]].
+> - 아래가 기대는 즉시 flush 계약은 그대로이고, 그 계약을 메서드 이름으로 드러내는 방식이 [[유일슬롯-비우고-같은값-재점유-쓰기순서와-메서드이름-신호]]에서 셋으로 갈렸다.
 
 무대는 `NaverPayApprovalService.completeVerifiedApproval` — NaverPay PG가 승인 SUCCESS(=캡처 완료)를 준 뒤, 응답의 키·금액이 우리 결제와 일치하는지 검증을 통과하면 결제행을 SUCCEEDED로, 주문을 PAID로 반영하는 메서드. 리뷰 중 이 경로의 두 부채를 **발견(pr-224, #224)**하고 후속 이슈 #225로 넘겨 **확정·구현(pr-226)**했다.
 

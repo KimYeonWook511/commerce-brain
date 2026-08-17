@@ -6,7 +6,7 @@ author: KimYeonWook511
 decided_by: KimYeonWook511
 tags: [payment, reconciliation, unknown-status, postprocess-policy, naverpay, manual-review, escalation, starvation, order-expiry]
 created: 2026-06-08
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-08-pr-224-postprocess-policy-unknown-redesign]]"
@@ -40,6 +40,14 @@ sources:
 - **cancel 측은 시간이 아니라 응답 코드로 가른다:** 취소 마감 만료 응답은 시간과 무관하게 즉시 수동검토, "취소 미완"·"이미 진행 중" 응답은 계속 폴링.
 
 이 임계 상수(UNKNOWN ~1분 / REQUESTED ~15분 / escalation ~6시간)의 파생 근거가 여기 정본이고, 대사 스캔 쿼리가 이 상수를 공유하지 않아 어긋나 있던 문제(starvation)의 수정은 [[미확정차단-대사스캔-정합성-starvation-escalation]]에서 다룬다.
+
+> [!warning] 이 절의 정본 선언은 더는 유효하지 않다 (2026-08)
+> 위 상수 셋이 2026-08 재설계에서 **전부 사라졌다.** 이 절이 스스로 "파생 근거가 여기 정본"이라고 선언하고 있어, 다른 노트들이 임계 상수를 확인하러 이곳으로 오면 없어진 값을 읽게 된다.
+> - **escalation ~6시간 상한 폐지** — "멈추면 회원이 할 수 있는 일이 없다"가 근거다. 상한 대신 회차마다 벌어지는 간격 표(`10초·30초·2분·5분·10분`)를 쓴다: [[결과회수-상한-폐지와-백오프-표-통지-반복]].
+> - **REQUESTED ~15분 하한의 근거가 소멸** — 첫 회차부터 승인 API를 다시 부르므로 **승인 가능 시간(10분)의 길이를 우리가 알 필요가 없어졌다.** 결제사마다 달라도 바꿀 곳이 없다: [[승인은-다시-물어-확정-환불에는-실패-종착이-없다]].
+> - **cancel 측을 응답 코드로 가른다**는 아래 서술은 살아남되 어휘가 넷으로 늘었다: [[외부-돈-호출-결과어휘-넷과-전송계층-판정-우선]].
+>
+> **결정 1(후처리 대상을 실패코드 열거가 아니라 status로 식별한다)과 결정 3(수동검토 격리)의 뼈대는 유효하다.** 다만 "자동 처리를 멈춤"을 매번 계산하지 않고 상태로 저장하는 쪽으로 갔고, 그 경위와 표시 수단을 하나씩 기각한 기록은 [[명세-반복검사-건수도-심각도도-수렴지표가-아니다]]에 있다.
 
 ## 결정 3: mismatch·환불거절·escalation 초과 → 수동검토 격리 (RelatedOrderStatus enum 제거)
 

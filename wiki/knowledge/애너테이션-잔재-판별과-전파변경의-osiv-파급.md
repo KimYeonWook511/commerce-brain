@@ -4,12 +4,13 @@ status: stable
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [transaction, transaction-boundary, jpa, hibernate, refactor, convention, optimistic-lock, git]
+tags: [transaction-boundary, jpa, hibernate, refactor, convention, optimistic-lock, git]
 created: 2026-08-08
 updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-08-08-cancel-tx-boundary-propagation-legacy]]"
+  - { repo: commerce-backend, path: "docs/adr/20260614-pr248-application-role-suffix.md" }
 ---
 
 # 애너테이션이 오래 살아남았다고 의도된 것은 아니다 — 그리고 전파 변경은 커밋 타이밍만의 문제가 아니다

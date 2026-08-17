@@ -4,9 +4,9 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [payment, naming, refactor, jpa, enum, save-flush, code-review]
+tags: [payment, naming-convention, refactor, jpa, enum, flush, code-review]
 created: 2026-06-05
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-05-pr-210-payment-naming-cleanup]]"

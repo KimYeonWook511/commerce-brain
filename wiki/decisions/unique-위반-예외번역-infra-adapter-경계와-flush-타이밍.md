@@ -4,7 +4,7 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [exception-handling, infra-adapter, jpa, flush, transaction, unique-constraint, payment, innodb, concurrency]
+tags: [exception-handling, infra-adapter, jpa, flush, transaction-boundary, unique-constraint, payment, innodb, concurrency]
 created: 2026-06-08
 updated: 2026-08-17
 superseded_by: null

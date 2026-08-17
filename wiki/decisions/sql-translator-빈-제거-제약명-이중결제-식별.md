@@ -4,9 +4,9 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [exception-handling, payment, duplicate-payment, unique-constraint, constraint-name, exception-translator, hibernate, mysql, adapter, spring-dao, integration-test]
+tags: [exception-handling, payment, double-payment, unique-constraint, constraint-name, exception-translator, hibernate, mysql, adapter, spring-dao, integration-test]
 created: 2026-06-09
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-09-pr-228-sql-translator-removal-getconstraintname]]"

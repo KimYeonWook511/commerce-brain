@@ -4,9 +4,9 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [payment, unknown-status, reconciliation, double-charge, idempotency, cancel, naverpay, error-handling, merchant-pay-key]
+tags: [payment, unknown-status, reconciliation, double-payment, idempotency, cancel, naverpay, error-handling, merchant-pay-key]
 created: 2026-06-07
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-07-pr-220-already-complete-cancel-unknown]]"

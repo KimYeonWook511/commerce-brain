@@ -4,9 +4,9 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [authorization, authentication, jwt, layered-architecture, package-cycle, stable-dependencies, port-adapter, error-code, leaf, role, token-validation]
+tags: [authorization, auth, jwt, layered-architecture, package-cycle, stable-dependencies, port-adapter, error-code, leaf, role, token-validation]
 created: 2026-07-11
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-07-11-security-common-leaf-and-port-naming]]"

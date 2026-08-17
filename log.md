@@ -42,3 +42,25 @@ append-only. 각 항목 형식: `## [YYYY-MM-DD] {ingest|query|lint|setup} | <�
   4. **`knowledge/` 25개** — 하위 폴더링 승격(index에서 방법론/테스트/문서운영/구현패턴 4군으로 갈라 쓰는 중).
   5. **`payment-도메인-구조-개요`가 두 차례 재설계로 사실상 무효** — 현재 구조를 반영한 새 허브 topic 작성 여부.
   6. **`contracts/` 여전히 빈 폴더** — 멱등키 헤더 계약·취소 요청/응답 형태가 api-contract 후보로 보인다(코드가 정본이므로 companion).
+
+## [2026-08-17] lint | wiki 전체 154 노트 · 33 MOC
+
+- **발견 20건**: 모순 2 · 낡음 5 · 누락 cross-ref 8쌍 + sources 2 · 태그 산발(279종·싱글턴 134) 1 · 폴더 승격 후보 2. **통과**: 고립 0 · MOC drift 0 · frontmatter/status enum 0 · companion 본문 복사 위반 0 · 진짜 중복 결정 0 · promote 대상 0(전 노트 단일 platform).
+- **수정 4묶음 (사용자 승인)**:
+  1. **모순 2건** — `대사-확정-검증보상-대칭-재승인없음`을 `superseded`로 내리고 뒤집힘 콜아웃 추가(**제목의 "재승인은 없다"가 더는 참이 아니다**; 살아남은 것 셋을 명시). `결제-후처리-대상식별-status중심-재설계`의 **임계 상수 정본 선언**(1분/15분/6시간)이 무효가 된 것을 절 단위로 콜아웃.
+  2. **낡음 콜아웃 4건** — `payment-낙관락-충돌처리-3계층`(14곳 인용) · `payment-order-도메인분리와-pg격리`(허브) · `주문-이중결제-앞단-진입차단`(그 조회에 결함이 있었음) · `결제승인완료-보상-완료우선`.
+  3. **cross-ref 8쌍 + sources 2건** — 형제 결정 간 양방향 링크 보강, 본문에서 인용하던 `{repo,path}` 2건을 frontmatter `sources`로 승격(`docs/prd.md`, `docs/adr/20260614-pr248-application-role-suffix.md`).
+  4. **태그 정규화** — 동의어 8쌍 통합(27개 노트 frontmatter 소급 수정): `transaction`→`transaction-boundary`(20) · `duplicate-payment`·`double-charge`→`double-payment`(16) · `schema-design`→`schema`(11) · `authentication`→`auth`(10) · `reconcile`→`reconciliation`(25) · `naming`→`naming-convention`(8) · `refactoring`→`refactor`(8) · `save-and-flush`·`save-flush`→`flush`(4). 미등록 태그 14종 glossary 등재. **279→269종, 싱글턴 134→131.**
+- **MOC 33개** — 태그 병합 반영해 전량 재생성 + `schema`(11) 신규.
+- **판단 근거로 남긴 것**:
+  - **`security`(7)를 `auth`(10)에 합치지 않았다** — 결제 노트에서 `security`는 **접근 제어**를 뜻하고 인증 도메인과 다른 축이다. 합치면 두 관심사가 한 태그에 섞인다.
+  - **태그 겹침 기반 dedup이 무력화됐다** — `payment`(79)·`refund`(30)가 지배해 4개+ 공유 쌍이 101건 걸리고 그중 진짜 중복은 0건이었다. **dedup 신호로 쓰려면 지배 태그를 제외하고 봐야 한다.**
+  - **계약 drift는 판정 불가로 남겼다** — companion 7개 중 3개가 07-14 기준인데 정본이 `commerce-backend`에 있어 이 저장소에서 read-only 확인이 안 된다.
+- **보류(사용자 판단)**: `decisions/` 118개 평탄 → 하위 폴더링. 파일 이동은 전체 wikilink 재검증이 필요해 별도 회차로 미룸.
+- **다음 lint 후보**:
+  1. **`payment` MOC 79개** — 분할이 실질적으로 필요. `refund`·`partial-cancel`·`reconciliation`으로 이미 갈라지므로 하위 축 인덱스로 재구성.
+  2. **`payment-도메인-구조-개요`가 두 차례 재설계로 사실상 무효** — 콜아웃으로 "여기가 아니라 저기를 봐라"만 걸어둔 상태. 현재 구조를 반영한 새 허브 topic 작성 여부.
+  3. **남은 동의어** — `infra-adapter`→`adapter`, `hibernate`를 `jpa` 하위로, `spec-review`·`design-review`, `batch`·`spring-batch`, `pg`→`pg-gateway`, `cancel`→`partial-cancel`.
+  4. **싱글턴 131종** — 절반이 여전히 1회용. 3회 미만 태그를 일괄 정리할지 판단 필요.
+  5. **`decisions/`·`knowledge/` 폴더 승격** (이번 보류분).
+  6. **`contracts/` 빈 폴더** — 멱등키 헤더 계약·취소 요청/응답 형태가 api-contract 후보(코드가 정본이므로 companion).

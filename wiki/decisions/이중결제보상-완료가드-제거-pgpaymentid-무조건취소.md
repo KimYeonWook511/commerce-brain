@@ -4,9 +4,9 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [payment, double-charge, compensation, refund, guard, unique-constraint, merchant-pay-key, reservation]
+tags: [payment, double-payment, compensation, refund, guard, unique-constraint, merchant-pay-key, reservation]
 created: 2026-06-09
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-06-09-pr-233-compensation-guard-evolution]]"

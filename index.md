@@ -7,7 +7,7 @@ updated: 2026-08-17
 
 wiki 페이지를 타입별로 한 줄 요약한다. **ingest 마다 갱신**한다. 분류의 진실은 각 노트 frontmatter이고, 이 카탈로그는 탐색 보조다.
 
-총 154개 노트 · MOC 32개.
+총 154개 노트 · MOC 33개.
 
 ## decisions (118)
 
@@ -104,7 +104,7 @@ wiki 페이지를 타입별로 한 줄 요약한다. **ingest 마다 갱신**한
 - [[결제승인완료-보상-완료우선-이중결제-adapter매핑]] — 완료 우선 + 이중결제 adapter 매핑
 - [[이중결제보상-완료가드-제거-pgpaymentid-무조건취소]] — 보상 대상 pgPaymentId 무조건 취소로 전환
 - [[requires-new-격리-제거-보상판단-트랜잭션정책]] — 근거 사라진 방어벨트와 잘못 박힌 정책 문구 정정
-- [[대사-확정-검증보상-대칭-재승인없음]] — 실시간과 대칭 검증·중복결제 환불 누락 수정
+- [[대사-확정-검증보상-대칭-재승인없음]] `superseded` — 실시간과 대칭 검증·중복결제 환불 누락 수정
 - [[결제-후처리-대상식별-status중심-재설계]] — 후처리 대상 식별을 실패코드 열거에서 status 중심으로 재설계
 - [[결과불명-unknown-보존-alreadycomplete-cancel-경로확장]] — 결과 불명 시 UNKNOWN 보존을 AlreadyComplete 이력 재확인·cancel 경로로 확장
 - [[미확정차단-대사스캔-정합성-starvation-escalation]] — over-blocking·starvation은 escalation 종착 한 곳에서 풀린다
@@ -223,16 +223,13 @@ _(없음)_
 - [[jpa-메커니즘-이점-한계와-ddd-괴리-트레이드오프]] — 실무 트레이드오프 정리
 - [[ddd-이관-컨벤션-adapter-command-query-네이밍]] — adapter·command/query·의도기반 메서드명·legacy 분리
 
-## features (MOC, 32)
+## features (MOC, 33)
 
 도메인·기능·기법 축의 태그만 MOC로 만든다(5개+). 프로세스·메타 축(`convention` 21·`process` 12·`verification` 8 등)은 `knowledge/`가 담당한다.
 
-- [[payment]] (79) · [[refund]] (30) · [[order]] (27) · [[partial-cancel]] (18)
-- [[idempotency]] (32) · [[concurrency]] (26) · [[unique-constraint]] (21) · [[double-payment]] (10)
-- [[reconciliation]] (23) · [[escalation]] (12) · [[unknown-status]] (8) · [[compensation]] (15) · [[saga]] (6)
-- [[exception-handling]] (21) · [[error-code]] (11)
-- [[optimistic-lock]] (14) · [[pessimistic-lock]] (8) · [[transaction-boundary]] (11)
-- [[ddd]] (13) · [[aggregate]] (10) · [[adapter]] (10)
-- [[naverpay]] (19) · [[pg-gateway]] (15) · [[reservation]] (9)
-- [[jpa]] (15) · [[mysql]] (13) · [[redis]] (12) · [[migration]] (8)
-- [[stock]] (11) · [[product]] (7) · [[auth]] (7) · [[cart]] (6)
+- **도메인·기능** — [[payment]] (79) · [[refund]] (30) · [[order]] (27) · [[partial-cancel]] (18) · [[stock]] (11) · [[product]] (7) · [[auth]] (10) · [[cart]] (6)
+- **멱등·동시성·제약** — [[idempotency]] (32) · [[concurrency]] (26) · [[unique-constraint]] (21) · [[double-payment]] (16) · [[optimistic-lock]] (14) · [[pessimistic-lock]] (8) · [[transaction-boundary]] (20)
+- **회수·보상·결과불명** — [[reconciliation]] (25) · [[escalation]] (12) · [[unknown-status]] (8) · [[compensation]] (15) · [[saga]] (6)
+- **예외·에러** — [[exception-handling]] (21) · [[error-code]] (11)
+- **구조·연동** — [[ddd]] (13) · [[aggregate]] (10) · [[adapter]] (10) · [[naverpay]] (19) · [[pg-gateway]] (15) · [[reservation]] (9)
+- **영속성·스키마** — [[jpa]] (15) · [[mysql]] (13) · [[redis]] (12) · [[schema]] (11) · [[migration]] (8)

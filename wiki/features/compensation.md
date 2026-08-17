@@ -19,7 +19,7 @@ updated: 2026-08-17
 - [[requires-new-격리-제거-보상판단-트랜잭션정책]]
 - [[결제사건-테이블분리-기각과-유일제약-문자열-단일컬럼-교체]]
 - [[결제승인완료-보상-완료우선-이중결제-adapter매핑]]
-- [[대사-확정-검증보상-대칭-재승인없음]]
+- [[대사-확정-검증보상-대칭-재승인없음]] `superseded`
 - [[보상판단-payment-존재-lock-대신-db-unique]]
 - [[보상흐름-설계-payment-application-책임-pgcanceller-dispatcher]]
 - [[이중결제보상-완료가드-제거-pgpaymentid-무조건취소]]

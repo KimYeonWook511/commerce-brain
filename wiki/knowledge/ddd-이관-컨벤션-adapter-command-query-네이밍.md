@@ -4,9 +4,9 @@ status: stable
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [ddd, hexagonal, adapter, repository, naming-convention, cqrs, refactoring]
+tags: [ddd, hexagonal, adapter, repository, naming-convention, cqrs, refactor]
 created: 2026-05-29
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-05-29-order-domain-overview]]"

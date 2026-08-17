@@ -4,9 +4,9 @@ status: accepted
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [payment, compensation, concurrency, db-unique, race-condition, transaction, ddd]
+tags: [payment, compensation, concurrency, db-unique, race-condition, transaction-boundary, ddd]
 created: 2026-05-29
-updated: 2026-07-14
+updated: 2026-08-17
 superseded_by: null
 sources:
   - "[[raw/sessions/backend/2026-05-29-payment-domain-overview]]"

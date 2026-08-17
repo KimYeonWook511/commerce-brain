@@ -4,7 +4,7 @@ status: superseded
 platform: backend
 author: KimYeonWook511
 decided_by: KimYeonWook511
-tags: [payment, reservation, schema-design, append-only, not-null, mysql]
+tags: [payment, reservation, schema, append-only, not-null, mysql]
 created: 2026-06-04
 updated: 2026-08-17
 superseded_by: "[[예약테이블-폐지-결제행-활성슬롯-단일화와-사라지는-방어]]"
